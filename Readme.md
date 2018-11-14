@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [DZIANIS DZICHKOUSKI](https://up.htmlacademy.ru/javascript/16/user/352891).
-* Наставник: `Неизвестно`.
+* Наставник: [Мария Филиппова](https://htmlacademy.ru/profile/js_ninja)
 
 ---
 
