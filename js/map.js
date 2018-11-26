@@ -31,28 +31,49 @@ var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+var mapPinsElement = document.querySelector('.map__pins');
+var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+
+var fragment = document.createDocumentFragment();
+
 var offers = [];
-for (var i = 1; i <= 8; i++) {
-  offers.push({
-    author: {
-      avatar: 'img/avatars/user0' + i + '.png'
-    },
-    offer: {
-      title: titles[i],
-      address: '',
-      price: getRandomNumber(1000, 1000000),
-      type: types[getRandomNumber(0, 3)],
-      rooms: getRandomNumber(1, 5),
-      guests: getRandomNumber(1, 7),
-      checkin: checkins[getRandomNumber(0, 2)],
-      checkout: checkouts[getRandomNumber(0, 2)],
-      features: facilities.slice(0, getRandomNumber(0, 5)),
-      description: '',
-      photos: photos
-    },
-    location: {
-      x: getRandomNumber(130, 1080),
-      y: getRandomNumber(130, 630)
-    }
-  });
-}
+var createPins = function () {
+  for (var i = 0; i < 8; i++) {
+    offers.push({
+      author: {
+        avatar: 'img/avatars/user0' + (i + 1) + '.png'
+      },
+      offer: {
+        title: titles[i],
+        address: location.x + ', ' + location.y,
+        price: getRandomNumber(1000, 1000000),
+        type: types[getRandomNumber(0, 3)],
+        rooms: getRandomNumber(1, 5),
+        guests: getRandomNumber(1, 7),
+        checkin: checkins[getRandomNumber(0, 2)],
+        checkout: checkouts[getRandomNumber(0, 2)],
+        features: facilities.slice(0, getRandomNumber(0, 5)),
+        description: '',
+        photos: photos
+      },
+      location: {
+        x: getRandomNumber(130, 1000), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
+        y: getRandomNumber(130, 630),
+        cuemba: ''
+      }
+    });
+
+    var pinElement = mapPinTemplate.cloneNode(true);
+    pinElement.style = 'left:' + offers[i].location.x + 'px; top:' + offers[i].location.y + 'px';
+    var pinImageElement = pinElement.querySelector('img');
+    pinImageElement.src = offers[i].author.avatar;
+    pinImageElement.alt = 'Pin' + i;
+    pinImageElement.title = 'Pin' + i;
+
+    fragment.appendChild(pinElement);
+  }
+
+  mapPinsElement.appendChild(fragment);
+};
+
+createPins();
