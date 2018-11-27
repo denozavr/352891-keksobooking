@@ -10,7 +10,19 @@ var titles = [
   'Уютное бунгало далеко от моря',
   'Неуютное бунгало по колено в воде'
 ];
-var types = ['palace', 'flat', 'house', 'bungalo'];
+// var types = ['palace', 'flat', 'house', 'bungalo'];
+// var types = [
+//   {eng: 'palace', rus: 'дворец'},
+//   {eng: 'flat', rus: 'квартира'},
+//   {eng: 'house', rus: 'дом'},
+//   {eng: 'bungalo', rus: 'бунгало'}];
+var types = [
+  {palace: 'Дворец'},
+  {flat: 'Квартира'},
+  {house: 'Дом'},
+  {bungalo: 'Бунгало'}
+];
+
 var checkins = ['12:00', '13:00', '14:00'];
 var checkouts = ['12:00', '13:00', '14:00'];
 var facilities = [
@@ -29,6 +41,10 @@ var photos = [
 
 var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+var randomSort = function () {
+  return 0.5 - Math.random();
 };
 
 document.querySelector('section.map').classList.remove('map--faded'); // delete map--faded
@@ -57,9 +73,9 @@ var createPins = function () {
         guests: getRandomNumber(1, 7),
         checkin: checkins[getRandomNumber(0, 2)],
         checkout: checkouts[getRandomNumber(0, 2)],
-        features: facilities.slice(0, getRandomNumber(0, 5)),
+        features: facilities.slice(0, getRandomNumber(1, 6)), // slice doesn't use end index so [last array index + 1]
         description: '',
-        photos: photos
+        photos: photos.sort(randomSort)
       },
       location: {
         x: getRandomNumber(130, 1000), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
@@ -115,7 +131,7 @@ var createCard = function (array) {
   cardElement.querySelector('.popup__title').textContent = offer.title;
   cardElement.querySelector('.popup__text--address').textContent = offer.address;
   cardElement.querySelector('.popup__text--price').textContent = offer.price + '₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = offer.type;
+  cardElement.querySelector('.popup__type').textContent = Object.values(offer.type);
   cardElement.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'заезд после ' + offer.checkin + ', ' + 'выезд до ' + offer.checkout;
   cardElement.querySelector('.popup__description').textContent = offer.description;
