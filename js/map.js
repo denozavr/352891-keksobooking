@@ -1,6 +1,17 @@
 'use strict';
 
-var titles = [
+var LOCATION_X_MIN = 130;
+var LOCATION_X_MAX = 1070;
+var LOCATION_Y_MIN = 130;
+var LOCATION_Y_MAX = 630;
+var PRICE_MIN = 1000;
+var PRICE_MAX = 1000000;
+var ROOMS_MIN = 1;
+var ROOMS_MAX = 5;
+var GUESTS_MIN = 1;
+var GUESTS_MAX = 10;
+
+var TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
   'Огромный прекрасный дворец',
@@ -16,16 +27,16 @@ var titles = [
 //   {eng: 'flat', rus: 'квартира'},
 //   {eng: 'house', rus: 'дом'},
 //   {eng: 'bungalo', rus: 'бунгало'}];
-var types = [
+var TYPES = [
   {palace: 'Дворец'},
   {flat: 'Квартира'},
   {house: 'Дом'},
   {bungalo: 'Бунгало'}
 ];
 
-var checkins = ['12:00', '13:00', '14:00'];
-var checkouts = ['12:00', '13:00', '14:00'];
-var facilities = [
+var CHECKINS = ['12:00', '13:00', '14:00'];
+var CHECKOUTS = ['12:00', '13:00', '14:00'];
+var FACILITIES = [
   'wifi',
   'dishwasher',
   'parking',
@@ -33,7 +44,7 @@ var facilities = [
   'elevator',
   'conditioner'
 ];
-var photos = [
+var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg'
@@ -65,21 +76,21 @@ var createPins = function () {
         avatar: 'img/avatars/user0' + (i + 1) + '.png'
       },
       offer: {
-        title: titles[i],
-        address: getRandomNumber(130, 1000) + ', ' + getRandomNumber(130, 630),
-        price: getRandomNumber(1000, 1000000),
-        type: types[getRandomNumber(0, 3)],
-        rooms: getRandomNumber(1, 5),
-        guests: getRandomNumber(1, 7),
-        checkin: checkins[getRandomNumber(0, 2)],
-        checkout: checkouts[getRandomNumber(0, 2)],
-        features: facilities.slice(0, getRandomNumber(1, 6)), // slice doesn't use end index so [last array index + 1]
+        title: TITLES[i],
+        address: getRandomNumber(LOCATION_X_MIN, LOCATION_X_MAX) + ', ' + getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX),
+        price: getRandomNumber(PRICE_MIN, PRICE_MAX),
+        type: TYPES[getRandomNumber(0, TYPES.length - 1)],
+        rooms: getRandomNumber(ROOMS_MIN, ROOMS_MAX),
+        guests: getRandomNumber(GUESTS_MIN, GUESTS_MAX),
+        checkin: CHECKINS[getRandomNumber(0, CHECKINS.length - 1)],
+        checkout: CHECKOUTS[getRandomNumber(0, CHECKOUTS.length - 1)],
+        features: FACILITIES.slice(0, getRandomNumber(1, FACILITIES.length)), // slice doesn't use end index so [last array index + 1]
         description: '',
-        photos: photos.sort(randomSort)
+        photos: PHOTOS.sort(randomSort)
       },
       location: {
-        x: getRandomNumber(130, 1000), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
-        y: getRandomNumber(130, 630)
+        x: getRandomNumber(LOCATION_X_MIN, LOCATION_X_MAX), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
+        y: getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX)
       }
     });
 
