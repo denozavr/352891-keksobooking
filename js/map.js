@@ -1,15 +1,18 @@
 'use strict';
 
-var LOCATION_X_MIN = 130;
-var LOCATION_X_MAX = 1070;
-var LOCATION_Y_MIN = 130;
-var LOCATION_Y_MAX = 630;
-var PRICE_MIN = 1000;
-var PRICE_MAX = 1000000;
-var ROOMS_MIN = 1;
-var ROOMS_MAX = 5;
-var GUESTS_MIN = 1;
-var GUESTS_MAX = 10;
+
+var MapConstant = {
+  LOCATION_X_MIN: 130,
+  LOCATION_X_MAX: 1070,
+  LOCATION_Y_MIN: 130,
+  LOCATION_Y_MAX: 630,
+  PRICE_MIN: 1000,
+  PRICE_MAX: 1000000,
+  ROOMS_MIN: 1,
+  ROOMS_MAX: 5,
+  GUESTS_MIN: 1,
+  GUESTS_MAX: 10,
+};
 
 var TITLES = [
   'Большая уютная квартира',
@@ -35,8 +38,9 @@ var TYPES = [
 ];
 
 var CHECKINS = ['12:00', '13:00', '14:00'];
-var CHECKOUTS = ['12:00', '13:00', '14:00'];
-var FACILITIES = [
+var CHECKOUTS = CHECKINS;
+
+var FEATURES = [
   'wifi',
   'dishwasher',
   'parking',
@@ -58,13 +62,13 @@ var randomSort = function () {
   return 0.5 - Math.random();
 };
 
-document.querySelector('section.map').classList.remove('map--faded'); // delete map--faded
+var mapElement = document.querySelector('section.map');
+mapElement.classList.remove('map--faded'); // delete map--faded
 
-var mapPinsElement = document.querySelector('.map__pins');
-var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-
-var mapCardElement = document.querySelector('section.map');
 var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+
+var mapPinsElement = mapElement.querySelector('.map__pins');
+var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
 var fragment = document.createDocumentFragment();
 
@@ -77,20 +81,20 @@ var createPins = function () {
       },
       offer: {
         title: TITLES[i],
-        address: getRandomNumber(LOCATION_X_MIN, LOCATION_X_MAX) + ', ' + getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX),
-        price: getRandomNumber(PRICE_MIN, PRICE_MAX),
+        address: getRandomNumber(MapConstant.LOCATION_X_MIN, MapConstant.LOCATION_X_MAX) + ', ' + getRandomNumber(MapConstant.LOCATION_Y_MIN, MapConstant.LOCATION_Y_MAX),
+        price: getRandomNumber(MapConstant.PRICE_MIN, MapConstant.PRICE_MAX),
         type: TYPES[getRandomNumber(0, TYPES.length - 1)],
-        rooms: getRandomNumber(ROOMS_MIN, ROOMS_MAX),
-        guests: getRandomNumber(GUESTS_MIN, GUESTS_MAX),
+        rooms: getRandomNumber(MapConstant.ROOMS_MIN, MapConstant.ROOMS_MAX),
+        guests: getRandomNumber(MapConstant.GUESTS_MIN, MapConstant.GUESTS_MAX),
         checkin: CHECKINS[getRandomNumber(0, CHECKINS.length - 1)],
         checkout: CHECKOUTS[getRandomNumber(0, CHECKOUTS.length - 1)],
-        features: FACILITIES.slice(0, getRandomNumber(1, FACILITIES.length)), // slice doesn't use end index so [last array index + 1]
+        features: FEATURES.slice(0, getRandomNumber(1, FEATURES.length)), // slice doesn't use end index so [last array index + 1]
         description: '',
         photos: PHOTOS.sort(randomSort)
       },
       location: {
-        x: getRandomNumber(LOCATION_X_MIN, LOCATION_X_MAX), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
-        y: getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX)
+        x: getRandomNumber(MapConstant.LOCATION_X_MIN, MapConstant.LOCATION_X_MAX), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
+        y: getRandomNumber(MapConstant.LOCATION_Y_MIN, MapConstant.LOCATION_Y_MAX)
       }
     });
 
@@ -152,7 +156,7 @@ var createCard = function (array) {
   cardElement.querySelector('.popup__photos').innerHTML = '';
   cardElement.querySelector('.popup__photos').appendChild(createPhotos(offer.photos));
 
-  mapCardElement.appendChild(cardElement);
+  mapElement.appendChild(cardElement);
 };
 
 createCard(offers);
