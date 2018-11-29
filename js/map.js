@@ -72,10 +72,10 @@ var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map_
 
 var fragment = document.createDocumentFragment();
 
-var offers = [];
-var createPins = function () {
+var adverts = [];
+var createAdvertsList = function () {
   for (var i = 0; i < 8; i++) {
-    offers.push({
+    adverts.push({
       author: {
         avatar: 'img/avatars/user0' + (i + 1) + '.png'
       },
@@ -97,13 +97,20 @@ var createPins = function () {
         y: getRandomNumber(MapConstant.LOCATION_Y_MIN, MapConstant.LOCATION_Y_MAX)
       }
     });
+  }
+};
+createAdvertsList();
+
+
+var createPins = function (array) {
+  for (var i = 0; i < array.length; i++) {
 
     var pinElement = mapPinTemplate.cloneNode(true);
-    pinElement.style = 'left:' + offers[i].location.x + 'px; top:' + offers[i].location.y + 'px';
+    pinElement.style = 'left:' + adverts[i].location.x + 'px; top:' + adverts[i].location.y + 'px';
     var pinImageElement = pinElement.querySelector('img');
-    pinImageElement.src = offers[i].author.avatar;
-    pinImageElement.alt = 'Pin' + i;
-    pinImageElement.title = 'Pin' + i;
+    pinImageElement.src = adverts[i].author.avatar;
+    pinImageElement.alt = adverts[i].offer.title;
+    pinImageElement.title = adverts[i].offer.title;
 
     fragment.appendChild(pinElement);
   }
@@ -111,7 +118,7 @@ var createPins = function () {
   mapPinsElement.appendChild(fragment);
 };
 
-createPins();
+createPins(adverts);
 
 
 var createFeatures = function (array) {
@@ -138,11 +145,10 @@ var createPhotos = function (array) {
   return fragment;
 };
 
-var createCard = function (array) {
+var createCard = function (advert) {
   var cardElement = mapCardTemplate.cloneNode(true);
-  var randomIndex = getRandomNumber(0, array.length - 1);
-  var offer = array[randomIndex].offer;
-  cardElement.querySelector('img').src = array[randomIndex].author.avatar;
+  var offer = advert.offer;
+  cardElement.querySelector('img').src = advert.author.avatar;
   cardElement.querySelector('.popup__title').textContent = offer.title;
   cardElement.querySelector('.popup__text--address').textContent = offer.address;
   cardElement.querySelector('.popup__text--price').textContent = offer.price + '₽/ночь';
@@ -159,6 +165,6 @@ var createCard = function (array) {
   mapElement.appendChild(cardElement);
 };
 
-createCard(offers);
+createCard(adverts[getRandomNumber(0, adverts.length - 1)]);
 
 
