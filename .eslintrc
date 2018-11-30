@@ -1,7 +1,9 @@
-root: true
-
-env:
-  browser: true
-
-extends:
-  "htmlacademy/es5"
+{
+  "extends": "htmlacademy/es5",
+  "env": {
+    "browser": true
+  },
+  "rules": {
+     "root": true
+  }
+}
