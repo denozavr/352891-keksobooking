@@ -1,17 +1,29 @@
 'use strict';
 
 
-var MapConstant = {
-  LOCATION_X_MIN: 130,
-  LOCATION_X_MAX: 1070,
-  LOCATION_Y_MIN: 130,
-  LOCATION_Y_MAX: 630,
-  PRICE_MIN: 1000,
-  PRICE_MAX: 1000000,
-  ROOMS_MIN: 1,
-  ROOMS_MAX: 5,
-  GUESTS_MIN: 1,
-  GUESTS_MAX: 10,
+var LocationX = {
+  MIN: 250,
+  MAX: 1000
+};
+
+var LocationY = {
+  MIN: 130,
+  MAX: 630
+};
+
+var Price = {
+  MIN: 1000,
+  MAX: 1000000
+};
+
+var RoomCount = {
+  MIN: 1,
+  MAX: 5
+};
+
+var GuestCount = {
+  MIN: 1,
+  MAX: 10
 };
 
 var TITLES = [
@@ -81,11 +93,11 @@ var createAdvertsList = function () {
       },
       offer: {
         title: TITLES[i],
-        address: getRandomNumber(MapConstant.LOCATION_X_MIN, MapConstant.LOCATION_X_MAX) + ', ' + getRandomNumber(MapConstant.LOCATION_Y_MIN, MapConstant.LOCATION_Y_MAX),
-        price: getRandomNumber(MapConstant.PRICE_MIN, MapConstant.PRICE_MAX),
+        address: getRandomNumber(LocationX.MIN, LocationX.MAX) + ', ' + getRandomNumber(LocationY.MIN, LocationY.MAX),
+        price: getRandomNumber(Price.MIN, Price.MAX),
         type: TYPES[getRandomNumber(0, TYPES.length - 1)],
-        rooms: getRandomNumber(MapConstant.ROOMS_MIN, MapConstant.ROOMS_MAX),
-        guests: getRandomNumber(MapConstant.GUESTS_MIN, MapConstant.GUESTS_MAX),
+        rooms: getRandomNumber(RoomCount.MIN, RoomCount.MAX),
+        guests: getRandomNumber(GuestCount.MIN, GuestCount.MAX),
         checkin: CHECKINS[getRandomNumber(0, CHECKINS.length - 1)],
         checkout: CHECKOUTS[getRandomNumber(0, CHECKOUTS.length - 1)],
         features: FEATURES.slice(0, getRandomNumber(1, FEATURES.length)), // slice doesn't use end index so [last array index + 1]
@@ -93,8 +105,8 @@ var createAdvertsList = function () {
         photos: PHOTOS.sort(randomSort)
       },
       location: {
-        x: getRandomNumber(MapConstant.LOCATION_X_MIN, MapConstant.LOCATION_X_MAX), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
-        y: getRandomNumber(MapConstant.LOCATION_Y_MIN, MapConstant.LOCATION_Y_MAX)
+        x: getRandomNumber(LocationX.MIN, LocationX.MAX), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
+        y: getRandomNumber(LocationY.MIN, LocationY.MAX)
       }
     });
   }
