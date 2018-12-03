@@ -28,7 +28,7 @@ var GuestCount = {
 
 var Keys = {
   ESC: 27
-}
+};
 
 var TITLES = [
   'Большая уютная квартира',
@@ -134,7 +134,7 @@ var createPins = function (array) {
   mapPinsElement.appendChild(fragment);
 };
 
-//createPins(adverts);
+// createPins(adverts);
 
 
 var createFeatures = function (array) {
@@ -191,3 +191,57 @@ var disableFormElements = function (disable) {
   }
 };
 disableFormElements(true);
+
+var formElement = document.querySelector('.ad-form');
+var pinMainElement = mapElement.querySelector('.map__pin--main');
+var inputAddress = formElement.querySelector('#address');
+inputAddress.value = parseInt(pinMainElement.style.top, 10) + ', ' + parseInt(pinMainElement.style.left, 10);
+
+// click on mainPin and write input address
+pinMainElement.addEventListener('mouseup', function () {
+  if (mapElement.classList.contains('map--faded')) {
+
+    mapElement.classList.remove('map--faded');
+    formElement.classList.remove('ad-form--disabled');
+
+    disableFormElements(false);
+    inputAddress.disabled = true;
+
+    createPins(adverts);
+  }
+
+  inputAddress.value = parseInt(pinMainElement.style.top, 10) + ', ' + parseInt(pinMainElement.style.left, 10);
+});
+
+// move/drag mainPin
+// https://stackoverflow.com/questions/6073505/what-is-the-difference-between-screenx-y-clientx-y-and-pagex-y
+pinMainElement.addEventListener('mousedown', function (evt) {
+  var startPosition = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var onMouseMove = function (moveEvent) {
+    var changePosition = {
+      x: startPosition.x - moveEvent.clientX,
+      y: startPosition.y - moveEvent.clientY,
+    };
+
+    startPosition = {
+      x: moveEvent.clientX,
+      y: moveEvent.clientY
+    };
+
+    pinMainElement.style.top = (pinMainElement.offsetTop - changePosition.y) + 'px';
+    pinMainElement.style.left = (pinMainElement.offsetLeft - changePosition.x) + 'px';
+  };
+
+  var onMouseUp = function () {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
+});
