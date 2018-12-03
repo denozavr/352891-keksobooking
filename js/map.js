@@ -26,6 +26,10 @@ var GuestCount = {
   MAX: 10
 };
 
+var Keys = {
+  ESC: 27
+}
+
 var TITLES = [
   'Большая уютная квартира',
   'Маленькая неуютная квартира',
@@ -75,7 +79,7 @@ var randomSort = function () {
 };
 
 var mapElement = document.querySelector('section.map');
-mapElement.classList.remove('map--faded'); // delete map--faded
+// mapElement.classList.remove('map--faded'); // delete map--faded
 
 var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
@@ -130,7 +134,7 @@ var createPins = function (array) {
   mapPinsElement.appendChild(fragment);
 };
 
-createPins(adverts);
+//createPins(adverts);
 
 
 var createFeatures = function (array) {
@@ -177,6 +181,13 @@ var createCard = function (advert) {
   mapElement.appendChild(cardElement);
 };
 
-createCard(adverts[getRandomNumber(0, adverts.length - 1)]);
+// createCard(adverts[getRandomNumber(0, adverts.length - 1)]);
 
-
+// disable all fieldsets and selects
+var formElements = document.querySelectorAll('fieldset, select');
+var disableFormElements = function (disable) {
+  for (var i = 0; i < formElements.length; i++) {
+    formElements[i].disabled = disable;
+  }
+};
+disableFormElements(true);
