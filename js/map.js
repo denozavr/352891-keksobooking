@@ -82,6 +82,7 @@ var mapElement = document.querySelector('section.map');
 // mapElement.classList.remove('map--faded'); // delete map--faded
 
 var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+var cardElement = mapCardTemplate.cloneNode(true);
 
 var mapPinsElement = mapElement.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -123,6 +124,7 @@ var createPins = function (array) {
 
     var pinElement = mapPinTemplate.cloneNode(true);
     pinElement.style = 'left:' + adverts[i].location.x + 'px; top:' + adverts[i].location.y + 'px';
+    pinElement.dataset.advertId = i;
     var pinImageElement = pinElement.querySelector('img');
     pinImageElement.src = adverts[i].author.avatar;
     pinImageElement.alt = adverts[i].offer.title;
@@ -162,7 +164,6 @@ var createPhotos = function (array) {
 };
 
 var createCard = function (advert) {
-  var cardElement = mapCardTemplate.cloneNode(true);
   var offer = advert.offer;
   cardElement.querySelector('img').src = advert.author.avatar;
   cardElement.querySelector('.popup__title').textContent = offer.title;
@@ -244,4 +245,30 @@ pinMainElement.addEventListener('mousedown', function (evt) {
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
 
+});
+
+// click on pin and show Card(advert) popup
+mapPinsElement.addEventListener('click', function (evt) {
+  var index = evt.target.dataset.advertId;
+  var parentElement = evt.target.parentElement;
+  if (evt.target.tagName === 'BUTTON') {
+    createCard(adverts[index]);
+    cardElement.classList.remove('hidden');
+  } else if (evt.target.tagName === 'IMG' && parentElement.className === 'map__pin') {
+    index = parentElement.dataset.advertId;
+    createCard(adverts[index]);
+    cardElement.classList.remove('hidden');
+  }
+
+});
+
+// close Card(advert) popup on cross click and ESC button
+cardElement.querySelector('.popup__close').addEventListener('click', function () {
+  cardElement.classList.add('hidden');
+});
+
+mapElement.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === Keys.ESC) {
+    cardElement.classList.add('hidden');
+  }
 });
