@@ -26,6 +26,11 @@ var GuestCount = {
   MAX: 10
 };
 
+var MainPinSize = {
+  HEIGHT: 80,
+  WIDTH: 62
+};
+
 var Keys = {
   ESC: 27
 };
@@ -123,7 +128,8 @@ var createPins = function (array) {
   for (var i = 0; i < array.length; i++) {
 
     var pinElement = mapPinTemplate.cloneNode(true);
-    pinElement.style = 'left:' + adverts[i].location.x + 'px; top:' + adverts[i].location.y + 'px';
+    pinElement.style.left = adverts[i].location.x + 'px';
+    pinElement.style.top = adverts[i].location.y + 'px';
     pinElement.dataset.advertId = i;
     var pinImageElement = pinElement.querySelector('img');
     pinImageElement.src = adverts[i].author.avatar;
@@ -193,10 +199,15 @@ var disableFormElements = function (disable) {
 };
 disableFormElements(true);
 
+var getMainPinCoordinates = function (el) {
+  return Math.floor(parseInt(el.style.top, 10) + MainPinSize.HEIGHT) + ', ' + Math.floor(parseInt(el.style.left, 10) + MainPinSize.WIDTH / 2);
+};
+
+
 var formElement = document.querySelector('.ad-form');
 var pinMainElement = mapElement.querySelector('.map__pin--main');
 var inputAddress = formElement.querySelector('#address');
-inputAddress.value = parseInt(pinMainElement.style.top, 10) + ', ' + parseInt(pinMainElement.style.left, 10);
+inputAddress.value = getMainPinCoordinates(pinMainElement);
 
 // click on mainPin and write input address
 pinMainElement.addEventListener('mouseup', function () {
@@ -211,7 +222,7 @@ pinMainElement.addEventListener('mouseup', function () {
     createPins(adverts);
   }
 
-  inputAddress.value = parseInt(pinMainElement.style.top, 10) + ', ' + parseInt(pinMainElement.style.left, 10);
+  inputAddress.value = getMainPinCoordinates(pinMainElement);
 });
 
 // move/drag mainPin
