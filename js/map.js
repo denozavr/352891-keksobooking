@@ -51,12 +51,24 @@ var TITLES = [
 //   {eng: 'flat', rus: 'квартира'},
 //   {eng: 'house', rus: 'дом'},
 //   {eng: 'bungalo', rus: 'бунгало'}];
-var TYPES = [
-  {palace: 'Дворец', minPrice: 10000},
-  {house: 'Дом', minPrice: 5000},
-  {flat: 'Квартира', minPrice: 1000},
-  {bungalo: 'Бунгало', minPrice: 0}
-];
+var TYPES = {
+  'palace': {
+    title: 'Дворец',
+    minPrice: 10000
+  },
+  'house': {
+    title: 'Дом',
+    minPrice: 5000
+  },
+  'flat': {
+    title: 'Квартира',
+    minPrice: 1000
+  },
+  'bungalo': {
+    title: 'Бунгало',
+    minPrice: 0
+  }
+};
 
 var CHECKINS = ['12:00', '13:00', '14:00'];
 var CHECKOUTS = CHECKINS;
@@ -82,8 +94,23 @@ var ROOM_GUESTS_OPTIONS = {
   '100': ['не для гостей']
 };
 
+var TITLE_LIMITS = {
+  min: 30,
+  max: 100
+};
+
+var InvalidMessages = {
+  TITLE: 'Title should be from 30 to 100 characters.',
+  PRICE: 'Price cannot be empty',
+};
+
 var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+var getRandomObjectRecord = function (obj) {
+  var keys = Object.keys(obj);
+  return obj[keys[getRandomNumber(0, keys.length - 1)]];
 };
 
 var randomSort = function () {
@@ -112,7 +139,7 @@ var createAdvertsList = function () {
         title: TITLES[i],
         address: getRandomNumber(LocationX.MIN, LocationX.MAX) + ', ' + getRandomNumber(LocationY.MIN, LocationY.MAX),
         price: getRandomNumber(Price.MIN, Price.MAX),
-        type: TYPES[getRandomNumber(0, TYPES.length - 1)],
+        type: getRandomObjectRecord(TYPES).title,
         rooms: getRandomNumber(RoomCount.MIN, RoomCount.MAX),
         guests: getRandomNumber(GuestCount.MIN, GuestCount.MAX),
         checkin: CHECKINS[getRandomNumber(0, CHECKINS.length - 1)],
@@ -182,7 +209,7 @@ var createCard = function (advert) {
   cardElement.querySelector('.popup__title').textContent = offer.title;
   cardElement.querySelector('.popup__text--address').textContent = offer.address;
   cardElement.querySelector('.popup__text--price').textContent = offer.price + '₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = Object.values(offer.type)[0];
+  cardElement.querySelector('.popup__type').textContent = offer.type;
   cardElement.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'заезд после ' + offer.checkin + ', ' + 'выезд до ' + offer.checkout;
   cardElement.querySelector('.popup__description').textContent = offer.description;
@@ -213,6 +240,13 @@ var getMainPinCoordinates = function (el) {
 
 var formElement = document.querySelector('.ad-form');
 var pinMainElement = mapElement.querySelector('.map__pin--main');
+
+var inputTitle = formElement.querySelector('#title');
+var inputPrice = formElement.querySelector('#price');
+var inputType = formElement.querySelector('#type');
+var inputСheckInOut = formElement.querySelectorAll('.ad-form__element--time select');
+var inputRooms = formElement.querySelector('#room_number');
+var inputCapacity = formElement.querySelector('#capacity');
 var inputAddress = formElement.querySelector('#address');
 inputAddress.value = getMainPinCoordinates(pinMainElement);
 
@@ -227,6 +261,7 @@ pinMainElement.addEventListener('mouseup', function () {
     inputAddress.disabled = true;
 
     createPins(adverts);
+    initForm();
   }
 
   inputAddress.value = getMainPinCoordinates(pinMainElement);
@@ -290,3 +325,61 @@ mapElement.addEventListener('keydown', function (evt) {
     cardElement.classList.add('hidden');
   }
 });
+
+var setMinPrice = function () {
+  var minCost = TYPES[inputType.value].minPrice;
+  inputPrice.min = minCost;
+  inputPrice.placeholder = minCost;
+};
+
+// set the same checkin and checkout times
+var changeTimes = function (evt) {
+  inputСheckInOut.forEach(function (item) {
+    if (evt.target.value !== item.value) {
+      item.value = evt.target.value;
+    }
+  });
+};
+
+var inputTitleInvalidListener = function (evt) {
+  if (evt.target.value.length < TITLE_LIMITS.min
+    || evt.target.value.length > TITLE_LIMITS.max) {
+    inputTitle.setCustomValidity(InvalidMessages.TITLE);
+  } else {
+    inputTitle.setCustomValidity('');
+  }
+};
+
+var inputPriceInvalidListener = function (evt) {
+  if (!evt.target.value) {
+    inputPrice.setCustomValidity(InvalidMessages.PRICE);
+  } else {
+    inputPrice.setCustomValidity('');
+  }
+};
+
+var roomsUpdate = function () {
+  var room = inputRooms.value;
+  var placesForRoom = ROOM_GUESTS_OPTIONS[room];
+  inputCapacity.textContent = '';
+  placesForRoom.forEach(function (item, i) {
+    var forPlacesOption = document.createElement('option');
+    forPlacesOption.textContent = item;
+    forPlacesOption.value = (+room > 3) ? 0 : i + 1;
+    inputCapacity.appendChild(forPlacesOption);
+  });
+};
+
+var initForm = function () {
+  inputСheckInOut.forEach(function (select) {
+    select.addEventListener('change', changeTimes);
+  });
+  inputRooms.addEventListener('change', roomsUpdate);
+  inputType.addEventListener('change', setMinPrice);
+  inputTitle.addEventListener('invalid', inputTitleInvalidListener);
+  inputTitle.addEventListener('blur', inputTitleInvalidListener);
+  inputPrice.addEventListener('invalid', inputPriceInvalidListener);
+  inputPrice.addEventListener('blur', inputPriceInvalidListener);
+  setMinPrice();
+  roomsUpdate();
+};
