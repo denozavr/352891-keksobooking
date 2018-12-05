@@ -52,10 +52,10 @@ var TITLES = [
 //   {eng: 'house', rus: 'дом'},
 //   {eng: 'bungalo', rus: 'бунгало'}];
 var TYPES = [
-  {palace: 'Дворец'},
-  {flat: 'Квартира'},
-  {house: 'Дом'},
-  {bungalo: 'Бунгало'}
+  {palace: 'Дворец', minPrice: 10000},
+  {house: 'Дом', minPrice: 5000},
+  {flat: 'Квартира', minPrice: 1000},
+  {bungalo: 'Бунгало', minPrice: 0}
 ];
 
 var CHECKINS = ['12:00', '13:00', '14:00'];
@@ -74,6 +74,13 @@ var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg'
 ];
+
+var ROOM_GUESTS_OPTIONS = {
+  '1': ['для 1 гостя'],
+  '2': ['для 1 гостя', 'для 2 гостей'],
+  '3': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей'],
+  '100': ['не для гостей']
+};
 
 var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -175,7 +182,7 @@ var createCard = function (advert) {
   cardElement.querySelector('.popup__title').textContent = offer.title;
   cardElement.querySelector('.popup__text--address').textContent = offer.address;
   cardElement.querySelector('.popup__text--price').textContent = offer.price + '₽/ночь';
-  cardElement.querySelector('.popup__type').textContent = Object.values(offer.type);
+  cardElement.querySelector('.popup__type').textContent = Object.values(offer.type)[0];
   cardElement.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
   cardElement.querySelector('.popup__text--time').textContent = 'заезд после ' + offer.checkin + ', ' + 'выезд до ' + offer.checkout;
   cardElement.querySelector('.popup__description').textContent = offer.description;
