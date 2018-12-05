@@ -1,17 +1,38 @@
 'use strict';
 
 
-var MapConstant = {
-  LOCATION_X_MIN: 130,
-  LOCATION_X_MAX: 1070,
-  LOCATION_Y_MIN: 130,
-  LOCATION_Y_MAX: 630,
-  PRICE_MIN: 1000,
-  PRICE_MAX: 1000000,
-  ROOMS_MIN: 1,
-  ROOMS_MAX: 5,
-  GUESTS_MIN: 1,
-  GUESTS_MAX: 10,
+var LocationX = {
+  MIN: 250,
+  MAX: 1000
+};
+
+var LocationY = {
+  MIN: 130,
+  MAX: 630
+};
+
+var Price = {
+  MIN: 1000,
+  MAX: 1000000
+};
+
+var RoomCount = {
+  MIN: 1,
+  MAX: 5
+};
+
+var GuestCount = {
+  MIN: 1,
+  MAX: 10
+};
+
+var MainPinSize = {
+  HEIGHT: 80,
+  WIDTH: 62
+};
+
+var Keys = {
+  ESC: 27
 };
 
 var TITLES = [
@@ -63,9 +84,10 @@ var randomSort = function () {
 };
 
 var mapElement = document.querySelector('section.map');
-mapElement.classList.remove('map--faded'); // delete map--faded
+// mapElement.classList.remove('map--faded'); // delete map--faded
 
 var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
+var cardElement = mapCardTemplate.cloneNode(true);
 
 var mapPinsElement = mapElement.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -81,11 +103,11 @@ var createAdvertsList = function () {
       },
       offer: {
         title: TITLES[i],
-        address: getRandomNumber(MapConstant.LOCATION_X_MIN, MapConstant.LOCATION_X_MAX) + ', ' + getRandomNumber(MapConstant.LOCATION_Y_MIN, MapConstant.LOCATION_Y_MAX),
-        price: getRandomNumber(MapConstant.PRICE_MIN, MapConstant.PRICE_MAX),
+        address: getRandomNumber(LocationX.MIN, LocationX.MAX) + ', ' + getRandomNumber(LocationY.MIN, LocationY.MAX),
+        price: getRandomNumber(Price.MIN, Price.MAX),
         type: TYPES[getRandomNumber(0, TYPES.length - 1)],
-        rooms: getRandomNumber(MapConstant.ROOMS_MIN, MapConstant.ROOMS_MAX),
-        guests: getRandomNumber(MapConstant.GUESTS_MIN, MapConstant.GUESTS_MAX),
+        rooms: getRandomNumber(RoomCount.MIN, RoomCount.MAX),
+        guests: getRandomNumber(GuestCount.MIN, GuestCount.MAX),
         checkin: CHECKINS[getRandomNumber(0, CHECKINS.length - 1)],
         checkout: CHECKOUTS[getRandomNumber(0, CHECKOUTS.length - 1)],
         features: FEATURES.slice(0, getRandomNumber(1, FEATURES.length)), // slice doesn't use end index so [last array index + 1]
@@ -93,8 +115,8 @@ var createAdvertsList = function () {
         photos: PHOTOS.sort(randomSort)
       },
       location: {
-        x: getRandomNumber(MapConstant.LOCATION_X_MIN, MapConstant.LOCATION_X_MAX), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
-        y: getRandomNumber(MapConstant.LOCATION_Y_MIN, MapConstant.LOCATION_Y_MAX)
+        x: getRandomNumber(LocationX.MIN, LocationX.MAX), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
+        y: getRandomNumber(LocationY.MIN, LocationY.MAX)
       }
     });
   }
@@ -106,7 +128,9 @@ var createPins = function (array) {
   for (var i = 0; i < array.length; i++) {
 
     var pinElement = mapPinTemplate.cloneNode(true);
-    pinElement.style = 'left:' + adverts[i].location.x + 'px; top:' + adverts[i].location.y + 'px';
+    pinElement.style.left = adverts[i].location.x + 'px';
+    pinElement.style.top = adverts[i].location.y + 'px';
+    pinElement.dataset.advertId = i;
     var pinImageElement = pinElement.querySelector('img');
     pinImageElement.src = adverts[i].author.avatar;
     pinImageElement.alt = adverts[i].offer.title;
@@ -118,7 +142,7 @@ var createPins = function (array) {
   mapPinsElement.appendChild(fragment);
 };
 
-createPins(adverts);
+// createPins(adverts);
 
 
 var createFeatures = function (array) {
@@ -146,7 +170,6 @@ var createPhotos = function (array) {
 };
 
 var createCard = function (advert) {
-  var cardElement = mapCardTemplate.cloneNode(true);
   var offer = advert.offer;
   cardElement.querySelector('img').src = advert.author.avatar;
   cardElement.querySelector('.popup__title').textContent = offer.title;
@@ -165,6 +188,98 @@ var createCard = function (advert) {
   mapElement.appendChild(cardElement);
 };
 
-createCard(adverts[getRandomNumber(0, adverts.length - 1)]);
+// createCard(adverts[getRandomNumber(0, adverts.length - 1)]);
+
+// disable all fieldsets and selects
+var formElements = document.querySelectorAll('fieldset, select');
+var disableFormElements = function (disable) {
+  for (var i = 0; i < formElements.length; i++) {
+    formElements[i].disabled = disable;
+  }
+};
+disableFormElements(true);
+
+var getMainPinCoordinates = function (el) {
+  return Math.floor(parseInt(el.style.top, 10) + MainPinSize.HEIGHT) + ', ' + Math.floor(parseInt(el.style.left, 10) + MainPinSize.WIDTH / 2);
+};
 
 
+var formElement = document.querySelector('.ad-form');
+var pinMainElement = mapElement.querySelector('.map__pin--main');
+var inputAddress = formElement.querySelector('#address');
+inputAddress.value = getMainPinCoordinates(pinMainElement);
+
+// click on mainPin and write input address
+pinMainElement.addEventListener('mouseup', function () {
+  if (mapElement.classList.contains('map--faded')) {
+
+    mapElement.classList.remove('map--faded');
+    formElement.classList.remove('ad-form--disabled');
+
+    disableFormElements(false);
+    inputAddress.disabled = true;
+
+    createPins(adverts);
+  }
+
+  inputAddress.value = getMainPinCoordinates(pinMainElement);
+});
+
+// move/drag mainPin
+// https://stackoverflow.com/questions/6073505/what-is-the-difference-between-screenx-y-clientx-y-and-pagex-y
+pinMainElement.addEventListener('mousedown', function (evt) {
+  var startPosition = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var onMouseMove = function (moveEvent) {
+    var changePosition = {
+      x: startPosition.x - moveEvent.clientX,
+      y: startPosition.y - moveEvent.clientY,
+    };
+
+    startPosition = {
+      x: moveEvent.clientX,
+      y: moveEvent.clientY
+    };
+
+    pinMainElement.style.top = (pinMainElement.offsetTop - changePosition.y) + 'px';
+    pinMainElement.style.left = (pinMainElement.offsetLeft - changePosition.x) + 'px';
+  };
+
+  var onMouseUp = function () {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
+});
+
+// click on pin and show Card(advert) popup
+mapPinsElement.addEventListener('click', function (evt) {
+  var index = evt.target.dataset.advertId;
+  var parentElement = evt.target.parentElement;
+  if (evt.target.tagName === 'BUTTON') {
+    createCard(adverts[index]);
+    cardElement.classList.remove('hidden');
+  } else if (evt.target.tagName === 'IMG' && parentElement.className === 'map__pin') {
+    index = parentElement.dataset.advertId;
+    createCard(adverts[index]);
+    cardElement.classList.remove('hidden');
+  }
+
+});
+
+// close Card(advert) popup on cross click and ESC button
+cardElement.querySelector('.popup__close').addEventListener('click', function () {
+  cardElement.classList.add('hidden');
+});
+
+mapElement.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === Keys.ESC) {
+    cardElement.classList.add('hidden');
+  }
+});
