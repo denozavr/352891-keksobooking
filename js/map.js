@@ -51,22 +51,22 @@ var TITLES = [
 //   {eng: 'flat', rus: 'квартира'},
 //   {eng: 'house', rus: 'дом'},
 //   {eng: 'bungalo', rus: 'бунгало'}];
-var TYPES = {
+var ApartType = {
   'palace': {
-    title: 'Дворец',
-    minPrice: 10000
+    TITLE: 'Дворец',
+    MIN_PRICE: 10000
   },
   'house': {
-    title: 'Дом',
-    minPrice: 5000
+    TITLE: 'Дом',
+    MIN_PRICE: 5000
   },
   'flat': {
-    title: 'Квартира',
-    minPrice: 1000
+    TITLE: 'Квартира',
+    MIN_PRICE: 1000
   },
   'bungalo': {
-    title: 'Бунгало',
-    minPrice: 0
+    TITLE: 'Бунгало',
+    MIN_PRICE: 0
   }
 };
 
@@ -87,19 +87,19 @@ var PHOTOS = [
   'http://o0.github.io/assets/images/tokyo/hotel2.jpg'
 ];
 
-var ROOM_GUESTS_OPTIONS = {
+var RoomOption = {
   '1': ['для 1 гостя'],
   '2': ['для 1 гостя', 'для 2 гостей'],
   '3': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей'],
   '100': ['не для гостей']
 };
 
-var TITLE_LIMITS = {
-  min: 30,
-  max: 100
+var TitleLimit = {
+  MIN: 30,
+  MAX: 100
 };
 
-var InvalidMessages = {
+var InvalidMessage = {
   TITLE: 'Title should be from 30 to 100 characters.',
   PRICE: 'Price cannot be empty',
 };
@@ -108,9 +108,9 @@ var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-var getRandomObjectRecord = function (obj) {
-  var keys = Object.keys(obj);
-  return obj[keys[getRandomNumber(0, keys.length - 1)]];
+var getRandomObjectRecord = function (objectsList) {
+  var keys = Object.keys(objectsList);
+  return objectsList[keys[getRandomNumber(0, keys.length - 1)]];
 };
 
 var randomSort = function () {
@@ -139,7 +139,7 @@ var createAdvertsList = function () {
         title: TITLES[i],
         address: getRandomNumber(LocationX.MIN, LocationX.MAX) + ', ' + getRandomNumber(LocationY.MIN, LocationY.MAX),
         price: getRandomNumber(Price.MIN, Price.MAX),
-        type: getRandomObjectRecord(TYPES).title,
+        type: getRandomObjectRecord(ApartType).TITLE,
         rooms: getRandomNumber(RoomCount.MIN, RoomCount.MAX),
         guests: getRandomNumber(GuestCount.MIN, GuestCount.MAX),
         checkin: CHECKINS[getRandomNumber(0, CHECKINS.length - 1)],
@@ -327,7 +327,7 @@ mapElement.addEventListener('keydown', function (evt) {
 });
 
 var setMinPrice = function () {
-  var minCost = TYPES[inputType.value].minPrice;
+  var minCost = ApartType[inputType.value].MIN_PRICE;
   inputPrice.min = minCost;
   inputPrice.placeholder = minCost;
 };
@@ -342,9 +342,9 @@ var changeTimes = function (evt) {
 };
 
 var inputTitleInvalidListener = function (evt) {
-  if (evt.target.value.length < TITLE_LIMITS.min
-    || evt.target.value.length > TITLE_LIMITS.max) {
-    inputTitle.setCustomValidity(InvalidMessages.TITLE);
+  if (evt.target.value.length < TitleLimit.MIN
+    || evt.target.value.length > TitleLimit.MAX) {
+    inputTitle.setCustomValidity(InvalidMessage.TITLE);
   } else {
     inputTitle.setCustomValidity('');
   }
@@ -352,7 +352,7 @@ var inputTitleInvalidListener = function (evt) {
 
 var inputPriceInvalidListener = function (evt) {
   if (!evt.target.value) {
-    inputPrice.setCustomValidity(InvalidMessages.PRICE);
+    inputPrice.setCustomValidity(InvalidMessage.PRICE);
   } else {
     inputPrice.setCustomValidity('');
   }
@@ -360,7 +360,7 @@ var inputPriceInvalidListener = function (evt) {
 
 var roomsUpdate = function () {
   var room = inputRooms.value;
-  var placesForRoom = ROOM_GUESTS_OPTIONS[room];
+  var placesForRoom = RoomOption[room];
   inputCapacity.textContent = '';
   placesForRoom.forEach(function (item, i) {
     var forPlacesOption = document.createElement('option');
