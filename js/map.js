@@ -2,8 +2,8 @@
 
 
 var LocationX = {
-  MIN: 250,
-  MAX: 1000
+  MIN: 0,
+  MAX: 1200
 };
 
 var LocationY = {
@@ -29,6 +29,11 @@ var GuestCount = {
 var MainPinSize = {
   HEIGHT: 80,
   WIDTH: 62
+};
+
+var PinSize = {
+  HEIGHT: 70,
+  WIDTH: 50
 };
 
 var Keys = {
@@ -137,7 +142,7 @@ var createAdvertsList = function () {
       },
       offer: {
         title: TITLES[i],
-        address: getRandomNumber(LocationX.MIN, LocationX.MAX) + ', ' + getRandomNumber(LocationY.MIN, LocationY.MAX),
+        address: getRandomNumber(LocationX.MIN, LocationX.MAX - PinSize.WIDTH) + ', ' + getRandomNumber(LocationY.MIN, LocationY.MAX),
         price: getRandomNumber(Price.MIN, Price.MAX),
         type: getRandomObjectRecord(ApartType).TITLE,
         rooms: getRandomNumber(RoomCount.MIN, RoomCount.MAX),
@@ -149,7 +154,7 @@ var createAdvertsList = function () {
         photos: PHOTOS.sort(randomSort)
       },
       location: {
-        x: getRandomNumber(LocationX.MIN, LocationX.MAX), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
+        x: getRandomNumber(LocationX.MIN, LocationX.MAX - PinSize.WIDTH), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
         y: getRandomNumber(LocationY.MIN, LocationY.MAX)
       }
     });
@@ -234,7 +239,7 @@ var disableFormElements = function (disable) {
 disableFormElements(true);
 
 var getMainPinCoordinates = function (el) {
-  return Math.floor(parseInt(el.style.top, 10) + MainPinSize.HEIGHT) + ', ' + Math.floor(parseInt(el.style.left, 10) + MainPinSize.WIDTH / 2);
+  return Math.floor(parseInt(el.style.left, 10) + MainPinSize.WIDTH / 2) + ', ' + Math.floor(parseInt(el.style.top, 10) + MainPinSize.HEIGHT);
 };
 
 
@@ -251,7 +256,7 @@ var inputAddress = formElement.querySelector('#address');
 inputAddress.value = getMainPinCoordinates(pinMainElement);
 
 // click on mainPin and write input address
-pinMainElement.addEventListener('mouseup', function () {
+var makePageActiveIfFaded = function () {
   if (mapElement.classList.contains('map--faded')) {
 
     mapElement.classList.remove('map--faded');
@@ -263,9 +268,23 @@ pinMainElement.addEventListener('mouseup', function () {
     createPins(adverts);
     initForm();
   }
+};
+
+var setMainPinCoordinates = function (x, y) {
+  var positionY = pinMainElement.offsetTop - y;
+  var positionX = pinMainElement.offsetLeft - x;
+
+  // positionY > 0 in order to touch with top of the pinMain the top of the mapElement
+  if (positionY < LocationY.MAX && positionY > (LocationY.MIN - LocationY.MIN)) {
+    pinMainElement.style.top = positionY + 'px';
+  }
+
+  if (positionX < (LocationX.MAX - MainPinSize.WIDTH) && positionX > LocationX.MIN) {
+    pinMainElement.style.left = positionX + 'px';
+  }
 
   inputAddress.value = getMainPinCoordinates(pinMainElement);
-});
+};
 
 // move/drag mainPin
 // https://stackoverflow.com/questions/6073505/what-is-the-difference-between-screenx-y-clientx-y-and-pagex-y
@@ -276,9 +295,10 @@ pinMainElement.addEventListener('mousedown', function (evt) {
   };
 
   var onMouseMove = function (moveEvent) {
+    moveEvent.preventDefault();
     var changePosition = {
       x: startPosition.x - moveEvent.clientX,
-      y: startPosition.y - moveEvent.clientY,
+      y: startPosition.y - moveEvent.clientY
     };
 
     startPosition = {
@@ -286,13 +306,16 @@ pinMainElement.addEventListener('mousedown', function (evt) {
       y: moveEvent.clientY
     };
 
-    pinMainElement.style.top = (pinMainElement.offsetTop - changePosition.y) + 'px';
-    pinMainElement.style.left = (pinMainElement.offsetLeft - changePosition.x) + 'px';
+    setMainPinCoordinates(changePosition.x, changePosition.y);
   };
 
-  var onMouseUp = function () {
+  var onMouseUp = function (upEvent) {
+    upEvent.preventDefault();
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
+
+    makePageActiveIfFaded();
+    inputAddress.value = getMainPinCoordinates(pinMainElement);
   };
 
   document.addEventListener('mousemove', onMouseMove);
