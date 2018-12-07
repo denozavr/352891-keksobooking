@@ -274,8 +274,7 @@ var setMainPinCoordinates = function (x, y) {
   var positionY = pinMainElement.offsetTop - y;
   var positionX = pinMainElement.offsetLeft - x;
 
-  // positionY > 0 in order to touch with top of the pinMain the top of the mapElement
-  if (positionY < LocationY.MAX && positionY > (LocationY.MIN - LocationY.MIN)) {
+  if (positionY < LocationY.MAX && positionY > (LocationY.MIN - MainPinSize.HEIGHT)) {
     pinMainElement.style.top = positionY + 'px';
   }
 
