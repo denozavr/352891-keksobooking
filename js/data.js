@@ -54,13 +54,16 @@
   var adverts = [];
   var createAdvertsList = function () {
     for (var i = 0; i < 8; i++) {
+      var coordinateX = utilsCall.getRandomNumber(utilsCall.Location.MIN_X, utilsCall.Location.MAX_X - PinSize.WIDTH);
+      var coordinateY = utilsCall.getRandomNumber(utilsCall.Location.MIN_Y, utilsCall.Location.MAX_Y);
+
       adverts.push({
         author: {
           avatar: 'img/avatars/user0' + (i + 1) + '.png'
         },
         offer: {
           title: TITLES[i],
-          address: utilsCall.getRandomNumber(utilsCall.Location.MIN_X, utilsCall.Location.MAX_X - PinSize.WIDTH) + ', ' + utilsCall.getRandomNumber(utilsCall.Location.MIN_Y, utilsCall.Location.MAX_Y),
+          address: coordinateX + ', ' + coordinateY,
           price: utilsCall.getRandomNumber(Price.MIN, Price.MAX),
           type: utilsCall.getRandomObjectRecord(utilsCall.ApartType).TITLE,
           rooms: utilsCall.getRandomNumber(RoomCount.MIN, RoomCount.MAX),
@@ -72,8 +75,8 @@
           photos: PHOTOS // if call sortRandomly from utils.js same order for all 8 cards
         },
         location: {
-          x: utilsCall.getRandomNumber(utilsCall.Location.MIN_X, utilsCall.Location.MAX_X - PinSize.WIDTH),
-          y: utilsCall.getRandomNumber(utilsCall.Location.MIN_Y, utilsCall.Location.MAX_Y)
+          x: coordinateX,
+          y: coordinateY
         }
       });
     }
