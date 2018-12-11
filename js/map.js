@@ -1,44 +1,12 @@
 'use strict';
 
-// #region Move later to utils.js
-var LocationX = {
-  MIN: 0,
-  MAX: 1200
+var Keys = {
+  ESC: 27
 };
-
-var LocationY = {
-  MIN: 130,
-  MAX: 630
-};
-
-var ApartType = {
-  'palace': {
-    TITLE: 'Дворец',
-    MIN_PRICE: 10000
-  },
-  'house': {
-    TITLE: 'Дом',
-    MIN_PRICE: 5000
-  },
-  'flat': {
-    TITLE: 'Квартира',
-    MIN_PRICE: 1000
-  },
-  'bungalo': {
-    TITLE: 'Бунгало',
-    MIN_PRICE: 0
-  }
-};
-// #endregion
-
 
 var MainPinSize = {
   HEIGHT: 80,
   WIDTH: 62
-};
-
-var Keys = {
-  ESC: 27
 };
 
 var RoomOption = {
@@ -58,6 +26,8 @@ var InvalidMessage = {
   PRICE: 'Price cannot be empty',
 };
 
+var utilsCall = window.utils;
+
 var mapElement = document.querySelector('section.map');
 // mapElement.classList.remove('map--faded'); // delete map--faded
 
@@ -72,7 +42,7 @@ var fragment = document.createDocumentFragment();
 
 var createPins = function (array) {
   for (var i = 0; i < array.length; i++) {
-    var adverts = window.data.getData;
+    var adverts = window.data.getAdvertsData;
 
     var pinElement = mapPinTemplate.cloneNode(true);
     pinElement.style.left = adverts[i].location.x + 'px';
@@ -173,7 +143,7 @@ var makePageActiveIfFaded = function () {
     disableFormElements(false);
     inputAddress.disabled = true;
 
-    createPins(window.data.getData);
+    createPins(window.data.getAdvertsData);
     initForm();
   }
 };
@@ -182,11 +152,11 @@ var setMainPinCoordinates = function (x, y) {
   var positionY = pinMainElement.offsetTop - y;
   var positionX = pinMainElement.offsetLeft - x;
 
-  if (positionY < LocationY.MAX && positionY > (LocationY.MIN - MainPinSize.HEIGHT)) {
+  if (positionY < utilsCall.Location.MAX_Y && positionY > (utilsCall.Location.MIN_Y - MainPinSize.HEIGHT)) {
     pinMainElement.style.top = positionY + 'px';
   }
 
-  if (positionX < (LocationX.MAX - MainPinSize.WIDTH) && positionX > LocationX.MIN) {
+  if (positionX < (utilsCall.Location.MAX_X - MainPinSize.WIDTH) && positionX > utilsCall.Location.MIN_X) {
     pinMainElement.style.left = positionX + 'px';
   }
 
@@ -235,11 +205,11 @@ mapPinsElement.addEventListener('click', function (evt) {
   var index = evt.target.dataset.advertId;
   var parentElement = evt.target.parentElement;
   if (evt.target.tagName === 'BUTTON') {
-    createCard(window.data.getData[index]);
+    createCard(window.data.getAdvertsData[index]);
     cardElement.classList.remove('hidden');
   } else if (evt.target.tagName === 'IMG' && parentElement.className === 'map__pin') {
     index = parentElement.dataset.advertId;
-    createCard(window.data.getData[index]);
+    createCard(window.data.getAdvertsData[index]);
     cardElement.classList.remove('hidden');
   }
 
@@ -257,7 +227,7 @@ mapElement.addEventListener('keydown', function (evt) {
 });
 
 var setMinPrice = function () {
-  var minCost = ApartType[inputType.value].MIN_PRICE;
+  var minCost = utilsCall.ApartType[inputType.value].MIN_PRICE;
   inputPrice.min = minCost;
   inputPrice.placeholder = minCost;
 };

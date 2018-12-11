@@ -1,37 +1,10 @@
 'use strict';
 
 (function () {
-
-  // #region Move later to utils.js
-  var LocationX = {
-    MIN: 0,
-    MAX: 1200
-  };
-
-  var LocationY = {
-    MIN: 130,
-    MAX: 630
-  };
-
-
   var PinSize = {
     HEIGHT: 70,
     WIDTH: 50
   };
-
-  var getRandomNumber = function (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
-
-  var getRandomObjectRecord = function (objectsList) {
-    var keys = Object.keys(objectsList);
-    return objectsList[keys[getRandomNumber(0, keys.length - 1)]];
-  };
-
-  var randomSort = function () {
-    return 0.5 - Math.random();
-  };
-  // #endregion
 
   var Price = {
     MIN: 1000,
@@ -58,30 +31,6 @@
     'Уютное бунгало далеко от моря',
     'Неуютное бунгало по колено в воде'
   ];
-  // var types = ['palace', 'flat', 'house', 'bungalo'];
-  // var types = [
-  //   {eng: 'palace', rus: 'дворец'},
-  //   {eng: 'flat', rus: 'квартира'},
-  //   {eng: 'house', rus: 'дом'},
-  //   {eng: 'bungalo', rus: 'бунгало'}];
-  var ApartType = {
-    'palace': {
-      TITLE: 'Дворец',
-      MIN_PRICE: 10000
-    },
-    'house': {
-      TITLE: 'Дом',
-      MIN_PRICE: 5000
-    },
-    'flat': {
-      TITLE: 'Квартира',
-      MIN_PRICE: 1000
-    },
-    'bungalo': {
-      TITLE: 'Бунгало',
-      MIN_PRICE: 0
-    }
-  };
 
   var CHECKINS = ['12:00', '13:00', '14:00'];
   var CHECKOUTS = CHECKINS;
@@ -100,6 +49,7 @@
     'http://o0.github.io/assets/images/tokyo/hotel2.jpg'
   ];
 
+  var utilsCall = window.utils;
 
   var adverts = [];
   var createAdvertsList = function () {
@@ -110,29 +60,29 @@
         },
         offer: {
           title: TITLES[i],
-          address: getRandomNumber(LocationX.MIN, LocationX.MAX - PinSize.WIDTH) + ', ' + getRandomNumber(LocationY.MIN, LocationY.MAX),
-          price: getRandomNumber(Price.MIN, Price.MAX),
-          type: getRandomObjectRecord(ApartType).TITLE,
-          rooms: getRandomNumber(RoomCount.MIN, RoomCount.MAX),
-          guests: getRandomNumber(GuestCount.MIN, GuestCount.MAX),
-          checkin: CHECKINS[getRandomNumber(0, CHECKINS.length - 1)],
-          checkout: CHECKOUTS[getRandomNumber(0, CHECKOUTS.length - 1)],
-          features: FEATURES.slice(0, getRandomNumber(1, FEATURES.length)), // slice doesn't use end index so [last array index + 1]
+          address: utilsCall.getRandomNumber(utilsCall.Location.MIN_X, utilsCall.Location.MAX_X - PinSize.WIDTH) + ', ' + utilsCall.getRandomNumber(utilsCall.Location.MIN_Y, utilsCall.Location.MAX_Y),
+          price: utilsCall.getRandomNumber(Price.MIN, Price.MAX),
+          type: utilsCall.getRandomObjectRecord(utilsCall.ApartType).TITLE,
+          rooms: utilsCall.getRandomNumber(RoomCount.MIN, RoomCount.MAX),
+          guests: utilsCall.getRandomNumber(GuestCount.MIN, GuestCount.MAX),
+          checkin: CHECKINS[utilsCall.getRandomNumber(0, CHECKINS.length - 1)],
+          checkout: CHECKOUTS[utilsCall.getRandomNumber(0, CHECKOUTS.length - 1)],
+          features: FEATURES.slice(0, utilsCall.getRandomNumber(1, FEATURES.length)), // slice doesn't use end index so [last array index + 1]
           description: '',
-          photos: PHOTOS.sort(randomSort)
+          photos: PHOTOS // if call sortRandomly from utils.js same order for all 8 cards
         },
         location: {
-          x: getRandomNumber(LocationX.MIN, LocationX.MAX - PinSize.WIDTH), // TODO: calculate later via document.querySelector('.map__overlay').offsetWidth/height - pin size
-          y: getRandomNumber(LocationY.MIN, LocationY.MAX)
+          x: utilsCall.getRandomNumber(utilsCall.Location.MIN_X, utilsCall.Location.MAX_X - PinSize.WIDTH),
+          y: utilsCall.getRandomNumber(utilsCall.Location.MIN_Y, utilsCall.Location.MAX_Y)
         }
       });
     }
   };
   createAdvertsList();
 
-  var getData = adverts;
+  var getAdvertsData = adverts;
 
   window.data = {
-    getData: getData
+    getAdvertsData: getAdvertsData
   };
 })();
