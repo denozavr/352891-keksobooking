@@ -9,25 +9,6 @@ var MainPinSize = {
   WIDTH: 62
 };
 
-var RoomOption = {
-  '1': ['для 1 гостя'],
-  '2': ['для 1 гостя', 'для 2 гостей'],
-  '3': ['для 1 гостя', 'для 2 гостей', 'для 3 гостей'],
-  '100': ['не для гостей']
-};
-
-var TitleLimit = {
-  MIN: 30,
-  MAX: 100
-};
-
-var InvalidMessage = {
-  TITLE: 'Title should be from 30 to 100 characters.',
-  PRICE: 'Price cannot be empty',
-};
-
-var utilsCall = window.utils;
-
 var mapElement = document.querySelector('section.map');
 // mapElement.classList.remove('map--faded'); // delete map--faded
 
@@ -60,7 +41,6 @@ var createPins = function (array) {
 };
 
 // createPins(adverts);
-
 
 var createFeatures = function (array) {
   for (var i = 0; i < array.length; i++) {
@@ -107,44 +87,25 @@ var createCard = function (advert) {
 
 // createCard(adverts[getRandomNumber(0, adverts.length - 1)]);
 
-// disable all fieldsets and selects
-var formElements = document.querySelectorAll('fieldset, select');
-var disableFormElements = function (disable) {
-  for (var i = 0; i < formElements.length; i++) {
-    formElements[i].disabled = disable;
-  }
-};
-disableFormElements(true);
-
 var getMainPinCoordinates = function (el) {
   return Math.floor(parseInt(el.style.left, 10) + MainPinSize.WIDTH / 2) + ', ' + Math.floor(parseInt(el.style.top, 10) + MainPinSize.HEIGHT);
 };
 
 
-var formElement = document.querySelector('.ad-form');
-var pinMainElement = mapElement.querySelector('.map__pin--main');
-
-var inputTitle = formElement.querySelector('#title');
-var inputPrice = formElement.querySelector('#price');
-var inputType = formElement.querySelector('#type');
-var inputСheckInOut = formElement.querySelectorAll('.ad-form__element--time select');
-var inputRooms = formElement.querySelector('#room_number');
-var inputCapacity = formElement.querySelector('#capacity');
-var inputAddress = formElement.querySelector('#address');
-inputAddress.value = getMainPinCoordinates(pinMainElement);
+var pinMainElement = document.querySelector('.map__pin--main');
+window.form.setAddress(getMainPinCoordinates(pinMainElement));
 
 // click on mainPin and write input address
 var makePageActiveIfFaded = function () {
   if (mapElement.classList.contains('map--faded')) {
 
     mapElement.classList.remove('map--faded');
-    formElement.classList.remove('ad-form--disabled');
+    window.form.makeFormActive();
 
-    disableFormElements(false);
-    inputAddress.disabled = true;
+    window.form.disableFormElements(false);
 
     createPins(window.data.getAdvertsData);
-    initForm();
+    window.form.initForm();
   }
 };
 
@@ -152,15 +113,15 @@ var setMainPinCoordinates = function (x, y) {
   var positionY = pinMainElement.offsetTop - y;
   var positionX = pinMainElement.offsetLeft - x;
 
-  if (positionY < utilsCall.Location.MAX_Y && positionY > (utilsCall.Location.MIN_Y - MainPinSize.HEIGHT)) {
+  if (positionY < window.utils.Location.MAX_Y && positionY > (window.utils.Location.MIN_Y - MainPinSize.HEIGHT)) {
     pinMainElement.style.top = positionY + 'px';
   }
 
-  if (positionX < (utilsCall.Location.MAX_X - MainPinSize.WIDTH) && positionX > utilsCall.Location.MIN_X) {
+  if (positionX < (window.utils.Location.MAX_X - MainPinSize.WIDTH) && positionX > window.utils.Location.MIN_X) {
     pinMainElement.style.left = positionX + 'px';
   }
 
-  inputAddress.value = getMainPinCoordinates(pinMainElement);
+  window.form.setAddress(getMainPinCoordinates(pinMainElement));
 };
 
 // move/drag mainPin
@@ -192,7 +153,7 @@ pinMainElement.addEventListener('mousedown', function (evt) {
     document.removeEventListener('mouseup', onMouseUp);
 
     makePageActiveIfFaded();
-    inputAddress.value = getMainPinCoordinates(pinMainElement);
+    window.form.setAddress(getMainPinCoordinates(pinMainElement));
   };
 
   document.addEventListener('mousemove', onMouseMove);
@@ -225,61 +186,3 @@ mapElement.addEventListener('keydown', function (evt) {
     cardElement.classList.add('hidden');
   }
 });
-
-var setMinPrice = function () {
-  var minCost = utilsCall.ApartType[inputType.value].MIN_PRICE;
-  inputPrice.min = minCost;
-  inputPrice.placeholder = minCost;
-};
-
-// set the same checkin and checkout times
-var changeTimes = function (evt) {
-  inputСheckInOut.forEach(function (item) {
-    if (evt.target.value !== item.value) {
-      item.value = evt.target.value;
-    }
-  });
-};
-
-var inputTitleInvalidListener = function (evt) {
-  if (evt.target.value.length < TitleLimit.MIN
-    || evt.target.value.length > TitleLimit.MAX) {
-    inputTitle.setCustomValidity(InvalidMessage.TITLE);
-  } else {
-    inputTitle.setCustomValidity('');
-  }
-};
-
-var inputPriceInvalidListener = function (evt) {
-  if (!evt.target.value) {
-    inputPrice.setCustomValidity(InvalidMessage.PRICE);
-  } else {
-    inputPrice.setCustomValidity('');
-  }
-};
-
-var roomsUpdate = function () {
-  var room = inputRooms.value;
-  var placesForRoom = RoomOption[room];
-  inputCapacity.textContent = '';
-  placesForRoom.forEach(function (item, i) {
-    var forPlacesOption = document.createElement('option');
-    forPlacesOption.textContent = item;
-    forPlacesOption.value = (+room > 3) ? 0 : i + 1;
-    inputCapacity.appendChild(forPlacesOption);
-  });
-};
-
-var initForm = function () {
-  inputСheckInOut.forEach(function (select) {
-    select.addEventListener('change', changeTimes);
-  });
-  inputRooms.addEventListener('change', roomsUpdate);
-  inputType.addEventListener('change', setMinPrice);
-  inputTitle.addEventListener('invalid', inputTitleInvalidListener);
-  inputTitle.addEventListener('blur', inputTitleInvalidListener);
-  inputPrice.addEventListener('invalid', inputPriceInvalidListener);
-  inputPrice.addEventListener('blur', inputPriceInvalidListener);
-  setMinPrice();
-  roomsUpdate();
-};
