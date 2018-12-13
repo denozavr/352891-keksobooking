@@ -26,6 +26,11 @@
     mapPinsElement.appendChild(fragment);
   };
 
+  // click on pin and show Card(advert) popup
+  mapPinsElement.addEventListener('click', function (evt) {
+    window.card.showCard(evt);
+  });
+
   window.pin = {
     createPins: createPins
   };

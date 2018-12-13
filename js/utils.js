@@ -2,6 +2,10 @@
 
 (function () {
 
+  var Keys = {
+    ESC: 27
+  };
+
   var Location = {
     MIN_X: 0,
     MAX_X: 1200,
@@ -47,11 +51,18 @@
     return sortedList;
   };
 
+  var checkEscape = function (evt, callback) {
+    if (evt.keyCode === Keys.ESC) {
+      callback();
+    }
+  };
+
   window.utils = {
     getRandomNumber: getRandomNumber,
     getRandomObjectRecord: getRandomObjectRecord,
     sortRandomly: sortRandomly,
     ApartType: ApartType,
-    Location: Location
+    Location: Location,
+    checkEscape: checkEscape
   };
 })();
