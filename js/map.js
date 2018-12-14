@@ -25,7 +25,7 @@
 
       window.form.disableFormElements(false);
 
-      window.pin.createPins(window.data.getAdvertsData);
+      window.pin.createPins();
       window.form.initForm();
     }
   };
