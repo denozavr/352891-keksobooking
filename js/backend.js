@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var TIMEOUT = 5555;
 
   var Url = {
     GET: 'https://js.dump.academy/keksobooking/data',
@@ -13,6 +14,16 @@
     xhr.addEventListener('load', function () {
       window.utils.statusCodeCB(xhr, onLoad, onError);
     });
+
+    xhr.addEventListener('error', function () {
+      onError('Connection error');
+    });
+
+    xhr.addEventListener('timeout', function () {
+      onError('Request could not be implemented for the ' + xhr.timeout + 'ms');
+    });
+
+    xhr.timeout = TIMEOUT;
 
     return xhr;
   };

@@ -98,6 +98,7 @@
     inputTitle.addEventListener('blur', inputTitleInvalidListener);
     inputPrice.addEventListener('invalid', inputPriceInvalidListener);
     inputPrice.addEventListener('blur', inputPriceInvalidListener);
+    formElement.addEventListener('submit', formSubmitHandler);
     setMinPrice();
     roomsUpdate();
   };
@@ -107,6 +108,53 @@
     inputAddress.disabled = true;
   };
 
+  var hideMessage = function () {
+    var dialog = document.querySelector('.success, .error');
+
+    dialog.remove();
+    document.removeEventListener('keydown', onKeydown);
+    document.removeEventListener('click', onClick);
+  };
+
+  var onKeydown = function (evt) {
+    window.utils.checkEscape(evt, hideMessage);
+  };
+
+  var onClick = function () {
+    hideMessage();
+  };
+
+  var showSuccessMessage = function () {
+    var template = document.querySelector('#success').content.cloneNode(true);
+    var main = document.body.querySelector('main');
+
+    main.appendChild(template);
+    document.addEventListener('keydown', onKeydown);
+    document.addEventListener('click', onClick);
+  };
+
+  var setSuccess = function () {
+    formElement.reset();
+    formElement.classList.add('ad-form--disabled');
+
+    showSuccessMessage();
+  };
+
+  var showError = function () {
+    var template = document.querySelector('#error').content.cloneNode(true);
+    var main = document.body.querySelector('main');
+
+    main.appendChild(template);
+
+    document.addEventListener('keydown', onKeydown);
+    document.addEventListener('click', onClick);
+  };
+
+
+  var formSubmitHandler = function (evt) {
+    evt.preventDefault();
+    window.backend.sendData(new FormData(formElement), setSuccess, showError);
+  };
 
   window.form = {
     setAddress: setAddress,
