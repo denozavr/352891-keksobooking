@@ -37,6 +37,14 @@
     window.backend.loadData(addPins, showError);
   };
 
+  var deletePins = function () {
+    // hide all pins, except MainPin
+    var items = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+    items.forEach(function (item) {
+      item.remove();
+    });
+  };
 
   // click on pin and show Card(advert) popup
   mapPinsElement.addEventListener('click', function (evt) {
@@ -44,6 +52,7 @@
   });
 
   window.pin = {
-    createPins: createPins
+    createPins: createPins,
+    deletePins: deletePins
   };
 })();

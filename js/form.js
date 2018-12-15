@@ -29,6 +29,10 @@
   var inputRooms = formElement.querySelector('#room_number');
   var inputCapacity = formElement.querySelector('#capacity');
   var inputAddress = formElement.querySelector('#address');
+  var buttonReset = formElement.querySelector('.ad-form__reset');
+
+  var inputTypeInitialValue = inputType.value;
+  var inputRoomsInitialValue = inputRooms.value;
 
   // disable all fieldsets and selects
   var formElements = document.querySelectorAll('fieldset, select');
@@ -76,7 +80,7 @@
     }
   };
 
-  var roomsUpdate = function () {
+  var updateRoom = function () {
     var room = inputRooms.value;
     var placesForRoom = RoomOption[room];
     inputCapacity.textContent = '';
@@ -92,7 +96,7 @@
     inputСheckInOut.forEach(function (select) {
       select.addEventListener('change', changeTimes);
     });
-    inputRooms.addEventListener('change', roomsUpdate);
+    inputRooms.addEventListener('change', updateRoom);
     inputType.addEventListener('change', setMinPrice);
     inputTitle.addEventListener('invalid', inputTitleInvalidListener);
     inputTitle.addEventListener('blur', inputTitleInvalidListener);
@@ -100,12 +104,29 @@
     inputPrice.addEventListener('blur', inputPriceInvalidListener);
     formElement.addEventListener('submit', formSubmitHandler);
     setMinPrice();
-    roomsUpdate();
+    updateRoom();
   };
 
   var makeFormActive = function () {
     formElement.classList.remove('ad-form--disabled');
     inputAddress.disabled = true;
+  };
+
+  // set initial values for Type -> MinPrice and Rooms -> Capacity
+  var setInitialInputsValue = function () {
+    inputType.value = inputTypeInitialValue;
+    setMinPrice();
+    inputRooms.value = inputRoomsInitialValue;
+    updateRoom();
+  };
+
+  var makeFormInactive = function () {
+    setInitialInputsValue();
+    if (!formElement.classList.contains('ad-form--disabled')) {
+      formElement.classList.add('ad-form--disabled');
+    }
+    formElement.reset();
+    disableFormElements(true);
   };
 
   var hideMessage = function () {
@@ -133,13 +154,6 @@
     document.addEventListener('click', onClick);
   };
 
-  var setSuccess = function () {
-    formElement.reset();
-    formElement.classList.add('ad-form--disabled');
-
-    showSuccessMessage();
-  };
-
   var showError = function () {
     var template = document.querySelector('#error').content.cloneNode(true);
     var main = document.body.querySelector('main');
@@ -153,8 +167,34 @@
 
   var formSubmitHandler = function (evt) {
     evt.preventDefault();
+    inputAddress.disabled = false; // if disabled true Error for submitted form
     window.backend.sendData(new FormData(formElement), setSuccess, showError);
   };
+
+  var setInitialPageState = function () {
+    setMinPrice();
+    updateRoom();
+
+    window.map.fadeMap();
+    makeFormInactive();
+    window.map.resetMainPinPosition();
+    window.pin.deletePins();
+    window.card.hideCard();
+
+  };
+
+  var onFormReset = function () {
+    setInitialPageState();
+  };
+
+  var setSuccess = function () {
+    setInitialPageState();
+
+    showSuccessMessage();
+  };
+
+  buttonReset.addEventListener('click', onFormReset);
+
 
   window.form = {
     setAddress: setAddress,

@@ -71,15 +71,21 @@
     }
   };
 
-  var hidePopup = function () {
-    cardElement.classList.add('hidden');
+  var hideCard = function () {
+    var card = document.querySelector('.map__card.popup');
+
+    if (card) {
+      card.remove();
+    }
+    // cardElement.classList.add('hidden');
   };
 
   mapElement.addEventListener('keydown', function (evt) {
-    window.utils.checkEscape(evt, hidePopup);
+    window.utils.checkEscape(evt, hideCard);
   });
 
   window.card = {
-    showCard: showCard
+    showCard: showCard,
+    hideCard: hideCard
   };
 })();
