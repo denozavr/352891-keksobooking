@@ -16,6 +16,11 @@
   var pinMainElement = document.querySelector('.map__pin--main');
   window.form.setAddress(getMainPinCoordinates(pinMainElement));
 
+  var InitialMainPinPosition = {
+    TOP: parseInt(pinMainElement.style.top, 10),
+    LEFT: parseInt(pinMainElement.style.left, 10)
+  };
+
   // click on mainPin and write input address
   var makePageActiveIfFaded = function () {
     if (mapElement.classList.contains('map--faded')) {
@@ -25,7 +30,7 @@
 
       window.form.disableFormElements(false);
 
-      window.pin.createPins(window.data.getAdvertsData);
+      window.pin.createPins();
       window.form.initForm();
     }
   };
@@ -81,5 +86,23 @@
     document.addEventListener('mouseup', onMouseUp);
 
   });
+
+  var fadeMap = function () {
+    if (!mapElement.classList.contains('map--faded')) {
+      mapElement.classList.add('map--faded');
+    }
+  };
+
+  var resetMainPinPosition = function () {
+    pinMainElement.style.top = (InitialMainPinPosition.TOP) + 'px';
+    pinMainElement.style.left = (InitialMainPinPosition.LEFT) + 'px';
+    window.form.setAddress(getMainPinCoordinates(pinMainElement)); // set initial address for MainPin
+  };
+
+
+  window.map = {
+    fadeMap: fadeMap,
+    resetMainPinPosition: resetMainPinPosition
+  };
 
 })();

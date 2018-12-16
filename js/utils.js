@@ -6,6 +6,15 @@
     ESC: 27
   };
 
+  var StatusCode = {
+    OK: 200,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    SERVER_ERROR: 500
+  };
+
   var Location = {
     MIN_X: 0,
     MAX_X: 1200,
@@ -57,12 +66,43 @@
     }
   };
 
+  function checkifObjEmpty(object, propName) {
+    return Object.keys(object[propName]).length === 0;
+  }
+
+  var statusCodeCB = function (xhr, successCallback, errorCallback) {
+    switch (xhr.status) {
+      case StatusCode.OK:
+        successCallback(xhr.response);
+        break;
+      case StatusCode.BAD_REQUEST:
+        errorCallback('Request error');
+        break;
+      case StatusCode.UNAUTHORIZED:
+        errorCallback('Unauthorized access error');
+        break;
+      case StatusCode.FORBIDDEN:
+        errorCallback('Access forbidden');
+        break;
+      case StatusCode.NOT_FOUND:
+        errorCallback('Not found');
+        break;
+      case StatusCode.SERVER_ERROR:
+        errorCallback('Internal server error');
+        break;
+      default:
+        errorCallback('Response status: ' + xhr.status + ' ' + xhr.statusText);
+    }
+  };
+
   window.utils = {
     getRandomNumber: getRandomNumber,
     getRandomObjectRecord: getRandomObjectRecord,
     sortRandomly: sortRandomly,
     ApartType: ApartType,
     Location: Location,
-    checkEscape: checkEscape
+    checkEscape: checkEscape,
+    checkifObjEmpty: checkifObjEmpty,
+    statusCodeCB: statusCodeCB
   };
 })();
