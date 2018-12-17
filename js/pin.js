@@ -1,14 +1,22 @@
 'use strict';
 
 (function () {
+  var MAX_PINS = 5;
 
   var mapPinsElement = document.querySelector('.map__pins');
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   var fragment = document.createDocumentFragment();
   var adverts = [];
+  var allPins = [];
 
   var addPins = function (array) {
+    // if 1st call without filtering, then populate allPins array and don't touch it for the next filtered calls
+    if (allPins.length === 0) {
+      allPins = array;
+    }
+    array = array.slice(0, MAX_PINS);
+
     for (var i = 0; i < array.length; i++) {
       adverts = array;
 
@@ -33,8 +41,13 @@
     return error;
   };
 
-  var createPins = function () {
-    window.backend.loadData(addPins, showError);
+  var createPins = function (filteredPins) {
+
+    if (filteredPins) {
+      addPins(filteredPins);
+    } else {
+      window.backend.loadData(addPins, showError);
+    }
   };
 
   var deletePins = function () {
@@ -46,6 +59,10 @@
     });
   };
 
+  var getAllPins = function () {
+    return allPins;
+  };
+
   // click on pin and show Card(advert) popup
   mapPinsElement.addEventListener('click', function (evt) {
     window.card.showCard(evt, adverts);
@@ -53,6 +70,7 @@
 
   window.pin = {
     createPins: createPins,
-    deletePins: deletePins
+    deletePins: deletePins,
+    getAllPins: getAllPins
   };
 })();

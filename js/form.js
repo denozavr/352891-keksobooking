@@ -21,6 +21,7 @@
 
 
   var formElement = document.querySelector('.ad-form');
+  var mapFilterElement = document.querySelector('.map__filters');
 
   var inputTitle = formElement.querySelector('#title');
   var inputPrice = formElement.querySelector('#price');
@@ -92,6 +93,14 @@
     });
   };
 
+  var onFilterChange = window.utils.setDebounce(function () {
+    var filteredPins = window.filter.getFiltered(window.pin.getAllPins());
+
+    window.card.hideCard();
+    window.pin.deletePins();
+    window.pin.createPins(filteredPins);
+  });
+
   var initForm = function () {
     inputСheckInOut.forEach(function (select) {
       select.addEventListener('change', changeTimes);
@@ -103,6 +112,9 @@
     inputPrice.addEventListener('invalid', inputPriceInvalidListener);
     inputPrice.addEventListener('blur', inputPriceInvalidListener);
     formElement.addEventListener('submit', formSubmitHandler);
+
+    mapFilterElement.addEventListener('change', onFilterChange);
+
     setMinPrice();
     updateRoom();
   };
