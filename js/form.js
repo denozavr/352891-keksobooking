@@ -121,7 +121,6 @@
 
   var makeFormActive = function () {
     formElement.classList.remove('ad-form--disabled');
-    inputAddress.disabled = true;
     window.photoUpload.enableUpload();
   };
 
@@ -181,7 +180,6 @@
 
   var formSubmitHandler = function (evt) {
     evt.preventDefault();
-    inputAddress.disabled = false; // if disabled true Error for submitted form
     window.backend.sendData(new FormData(formElement), setSuccess, showError);
   };
 
