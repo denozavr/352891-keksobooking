@@ -2,6 +2,8 @@
 
 (function () {
 
+  var DEBOUNCE_INTERVAL = 500;
+
   var Keys = {
     ESC: 27
   };
@@ -95,14 +97,27 @@
     }
   };
 
+  var setDebounce = function (callback) {
+    var lastTimeout = null;
+    return function () {
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        callback();
+      }, DEBOUNCE_INTERVAL);
+    };
+  };
+
   window.utils = {
     getRandomNumber: getRandomNumber,
     getRandomObjectRecord: getRandomObjectRecord,
     sortRandomly: sortRandomly,
-    ApartType: ApartType,
-    Location: Location,
+    setDebounce: setDebounce,
     checkEscape: checkEscape,
     checkifObjEmpty: checkifObjEmpty,
+    ApartType: ApartType,
+    Location: Location,
     statusCodeCB: statusCodeCB
   };
 })();
