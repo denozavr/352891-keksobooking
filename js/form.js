@@ -121,7 +121,7 @@
 
   var makeFormActive = function () {
     formElement.classList.remove('ad-form--disabled');
-    inputAddress.disabled = true;
+    window.photoUpload.enableUpload();
   };
 
   // set initial values for Type -> MinPrice and Rooms -> Capacity
@@ -138,6 +138,7 @@
       formElement.classList.add('ad-form--disabled');
     }
     formElement.reset();
+    window.photoUpload.resetUpload();
     disableFormElements(true);
   };
 
@@ -179,7 +180,6 @@
 
   var formSubmitHandler = function (evt) {
     evt.preventDefault();
-    inputAddress.disabled = false; // if disabled true Error for submitted form
     window.backend.sendData(new FormData(formElement), setSuccess, showError);
   };
 
