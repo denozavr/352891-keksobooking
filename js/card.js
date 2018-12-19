@@ -77,7 +77,6 @@
     if (card) {
       card.remove();
     }
-    // cardElement.classList.add('hidden');
   };
 
   mapElement.addEventListener('keydown', function (evt) {
