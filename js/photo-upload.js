@@ -105,6 +105,8 @@
 
   var resetUpload = function () {
     headerPreviewImage.src = 'img/muffin-grey.svg';
+    avatarUploadInput.removeEventListener('change', onAvatarLoad);
+    imagesUploadInput.removeEventListener('change', onImagesLoad);
 
     var resetImages = photoElement.querySelectorAll('.ad-form__photo:not(.visually-hidden)');
     var cards = Array.from(resetImages);
@@ -112,6 +114,7 @@
     formImage[0].classList.remove('visually-hidden');
 
     cards.forEach(function (card) {
+      card.addEventListener('dragstart', onDragStart);
       card.remove();
     });
   };

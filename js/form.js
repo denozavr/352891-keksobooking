@@ -101,6 +101,10 @@
     window.pin.createPins(filteredPins);
   });
 
+  var onFormReset = function () {
+    setInitialPageState();
+  };
+
   var initForm = function () {
     inputСheckInOut.forEach(function (select) {
       select.addEventListener('change', changeTimes);
@@ -112,6 +116,7 @@
     inputPrice.addEventListener('invalid', inputPriceInvalidListener);
     inputPrice.addEventListener('blur', inputPriceInvalidListener);
     formElement.addEventListener('submit', formSubmitHandler);
+    buttonReset.addEventListener('click', onFormReset);
 
     mapFilterElement.addEventListener('change', onFilterChange);
 
@@ -132,12 +137,29 @@
     updateRoom();
   };
 
+  var removeEventListeners = function () {
+    inputСheckInOut.forEach(function (select) {
+      select.removeEventListener('change', changeTimes);
+    });
+    inputRooms.removeEventListener('change', updateRoom);
+    inputType.removeEventListener('change', setMinPrice);
+    inputTitle.removeEventListener('invalid', inputTitleInvalidListener);
+    inputTitle.removeEventListener('blur', inputTitleInvalidListener);
+    inputPrice.removeEventListener('invalid', inputPriceInvalidListener);
+    inputPrice.removeEventListener('blur', inputPriceInvalidListener);
+    formElement.removeEventListener('submit', formSubmitHandler);
+    buttonReset.removeEventListener('click', onFormReset);
+    mapFilterElement.removeEventListener('change', onFilterChange);
+  };
+
   var makeFormInactive = function () {
     setInitialInputsValue();
+    removeEventListeners();
     if (!formElement.classList.contains('ad-form--disabled')) {
       formElement.classList.add('ad-form--disabled');
     }
     formElement.reset();
+    mapFilterElement.reset();
     window.photoUpload.resetUpload();
     disableFormElements(true);
   };
@@ -192,21 +214,12 @@
     window.map.resetMainPinPosition();
     window.pin.deletePins();
     window.card.hideCard();
-
-  };
-
-  var onFormReset = function () {
-    setInitialPageState();
   };
 
   var setSuccess = function () {
     setInitialPageState();
-
     showSuccessMessage();
   };
-
-  buttonReset.addEventListener('click', onFormReset);
-
 
   window.form = {
     setAddress: setAddress,
