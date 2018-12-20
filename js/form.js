@@ -164,45 +164,9 @@
     disableFormElements(true);
   };
 
-  var onClick = function () {
-    hideMessage();
-  };
-
-  var onKeydown = function (evt) {
-    window.utils.checkEscape(evt, hideMessage);
-  };
-
-  var hideMessage = function () {
-    var dialog = document.querySelector('.success, .error');
-
-    dialog.remove();
-    document.removeEventListener('keydown', onKeydown);
-    document.removeEventListener('click', onClick);
-  };
-
-  var showSuccessMessage = function () {
-    var template = document.querySelector('#success').content.cloneNode(true);
-    var main = document.body.querySelector('main');
-
-    main.appendChild(template);
-    document.addEventListener('keydown', onKeydown);
-    document.addEventListener('click', onClick);
-  };
-
-  var showError = function () {
-    var template = document.querySelector('#error').content.cloneNode(true);
-    var main = document.body.querySelector('main');
-
-    main.appendChild(template);
-
-    document.addEventListener('keydown', onKeydown);
-    document.addEventListener('click', onClick);
-  };
-
-
   var onFormSubmit = function (evt) {
     evt.preventDefault();
-    window.backend.sendData(new FormData(formElement), setSuccess, showError);
+    window.backend.sendData(new FormData(formElement), setSuccess, window.modal.showErrorMessage);
   };
 
   var setInitialPageState = function () {
@@ -218,13 +182,14 @@
 
   var setSuccess = function () {
     setInitialPageState();
-    showSuccessMessage();
+    window.modal.showSuccessMessage();
   };
 
   window.form = {
     setAddress: setAddress,
     disableFormElements: disableFormElements,
     initForm: initForm,
-    makeFormActive: makeFormActive
+    makeFormActive: makeFormActive,
+    setInitialPageState: setInitialPageState
   };
 })();

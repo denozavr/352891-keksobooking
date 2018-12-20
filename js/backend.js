@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var TIMEOUT = 5555;
+  var TIMEOUT = 45000; // big timeout to give user opportunity to upload large images via form
 
   var StatusCode = {
     OK: 200,

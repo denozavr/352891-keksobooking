@@ -7,23 +7,23 @@
   var cardElement = mapCardTemplate.cloneNode(true);
   var fragment = document.createDocumentFragment();
 
-  var createFeatures = function (array) {
-    for (var i = 0; i < array.length; i++) {
+  var createFeatures = function (elements) {
+    for (var i = 0; i < elements.length; i++) {
       var featureItem = document.createElement('li');
-      featureItem.className = 'popup__feature popup__feature--' + array[i];
-      featureItem.title = array[i];
+      featureItem.className = 'popup__feature popup__feature--' + elements[i];
+      featureItem.title = elements[i];
       fragment.appendChild(featureItem);
     }
     return fragment;
   };
 
-  var createPhotos = function (array) {
+  var createPhotos = function (elements) {
     // sort photos randomly
-    array = window.utils.sortRandomly(array);
-    for (var i = 0; i < array.length; i++) {
+    elements = window.utils.sortRandomly(elements);
+    for (var i = 0; i < elements.length; i++) {
       var photo = document.createElement('img');
       photo.className = 'popup__photo';
-      photo.src = array[i];
+      photo.src = elements[i];
       photo.width = '45';
       photo.height = '40';
       photo.alt = 'Фотография жилья';

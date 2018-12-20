@@ -3,22 +3,22 @@
 (function () {
   var MAX_PINS = 5;
 
-  var mapPinsElement = document.querySelector('.map__pins');
+  var mapPinsElement = document.querySelector('.map__pins:not(.map__pin--main)'); // not to not show card for mainPin(will show error in console)
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   var fragment = document.createDocumentFragment();
   var adverts = [];
   var allPins = [];
 
-  var addPins = function (array) {
+  var addPins = function (elements) {
     // if 1st call without filtering, then populate allPins array and don't touch it for the next filtered calls
     if (allPins.length === 0) {
-      allPins = array;
+      allPins = elements;
     }
-    array = array.slice(0, MAX_PINS);
+    elements = elements.slice(0, MAX_PINS);
 
-    for (var i = 0; i < array.length; i++) {
-      adverts = array;
+    for (var i = 0; i < elements.length; i++) {
+      adverts = elements;
 
       if (!window.utils.checkIsObjectEmpty(adverts[i], 'offer')) {
         var pinElement = mapPinTemplate.cloneNode(true);
@@ -37,16 +37,16 @@
     mapPinsElement.appendChild(fragment);
   };
 
-  var showError = function (error) {
-    return error;
-  };
+  // var showError = function (error) {
+  //   return error;
+  // };
 
   var createPins = function (filteredPins) {
 
     if (filteredPins) {
       addPins(filteredPins);
     } else {
-      window.backend.loadData(addPins, showError);
+      window.backend.loadData(addPins, window.modal.showErrorMessage);
     }
   };
 

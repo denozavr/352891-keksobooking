@@ -1,16 +1,16 @@
 'use strict';
 (function () {
+  var Price = {
+    LOW: 10000,
+    MIDDLE: 50000
+  };
+
   var FILTER_INITIAL = 'any';
   var filtersElement = document.querySelector('.map__filters');
   var filterTypeInputElement = filtersElement.querySelector('#housing-type');
   var filterPriceInputElement = filtersElement.querySelector('#housing-price');
   var filterRoomInputElement = filtersElement.querySelector('#housing-rooms');
   var filterGuestInputElement = filtersElement.querySelector('#housing-guests');
-
-  var Price = {
-    LOW: 10000,
-    MIDDLE: 50000
-  };
 
   var filterType = function (pin) {
     return filterTypeInputElement.value === FILTER_INITIAL ? true :
