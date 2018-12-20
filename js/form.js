@@ -164,20 +164,20 @@
     disableFormElements(true);
   };
 
-  var hideMessage = function () {
-    var dialog = document.querySelector('.success, .error');
-
-    dialog.remove();
-    document.removeEventListener('keydown', onKeydown);
-    document.removeEventListener('click', hideMessage);
+  var onClick = function () {
+    hideMessage();
   };
 
   var onKeydown = function (evt) {
     window.utils.checkEscape(evt, hideMessage);
   };
 
-  var onClick = function () {
-    hideMessage();
+  var hideMessage = function () {
+    var dialog = document.querySelector('.success, .error');
+
+    dialog.remove();
+    document.removeEventListener('keydown', onKeydown);
+    document.removeEventListener('click', onClick);
   };
 
   var showSuccessMessage = function () {
@@ -186,7 +186,7 @@
 
     main.appendChild(template);
     document.addEventListener('keydown', onKeydown);
-    document.addEventListener('click', hideMessage);
+    document.addEventListener('click', onClick);
   };
 
   var showError = function () {
