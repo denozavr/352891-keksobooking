@@ -37,10 +37,6 @@
     mapPinsElement.appendChild(fragment);
   };
 
-  // var showError = function (error) {
-  //   return error;
-  // };
-
   var createPins = function (filteredPins) {
 
     if (filteredPins) {
