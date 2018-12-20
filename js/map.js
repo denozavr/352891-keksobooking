@@ -39,7 +39,7 @@
     var positionY = pinMainElement.offsetTop - y;
     var positionX = pinMainElement.offsetLeft - x;
 
-    if (positionY < window.utils.Location.MAX_Y && positionY > (window.utils.Location.MIN_Y - MainPinSize.HEIGHT)) {
+    if (positionY <= (window.utils.Location.MAX_Y - MainPinSize.HEIGHT) && positionY >= (window.utils.Location.MIN_Y - MainPinSize.HEIGHT)) {
       pinMainElement.style.top = positionY + 'px';
     }
 

@@ -2,10 +2,10 @@
 (function () {
   var FILTER_INITIAL = 'any';
   var filtersElement = document.querySelector('.map__filters');
-  var filterTypeInput = filtersElement.querySelector('#housing-type');
-  var filterPriceInput = filtersElement.querySelector('#housing-price');
-  var filterRoomInput = filtersElement.querySelector('#housing-rooms');
-  var filterGuestInput = filtersElement.querySelector('#housing-guests');
+  var filterTypeInputElement = filtersElement.querySelector('#housing-type');
+  var filterPriceInputElement = filtersElement.querySelector('#housing-price');
+  var filterRoomInputElement = filtersElement.querySelector('#housing-rooms');
+  var filterGuestInputElement = filtersElement.querySelector('#housing-guests');
 
   var Price = {
     LOW: 10000,
@@ -13,12 +13,12 @@
   };
 
   var filterType = function (pin) {
-    return filterTypeInput.value === FILTER_INITIAL ? true :
-      pin.offer.type === filterTypeInput.value;
+    return filterTypeInputElement.value === FILTER_INITIAL ? true :
+      pin.offer.type === filterTypeInputElement.value;
   };
 
   var filterPrice = function (pin) {
-    switch (filterPriceInput.value) {
+    switch (filterPriceInputElement.value) {
       case 'low':
         return pin.offer.price < Price.LOW;
       case 'middle':
@@ -31,13 +31,13 @@
   };
 
   var filterRoom = function (pin) {
-    return filterRoomInput.value === FILTER_INITIAL ? true :
-      pin.offer.rooms === parseInt(filterRoomInput.value, 10);
+    return filterRoomInputElement.value === FILTER_INITIAL ? true :
+      pin.offer.rooms === parseInt(filterRoomInputElement.value, 10);
   };
 
   var filterGuest = function (pin) {
-    return filterGuestInput.value === FILTER_INITIAL ? true :
-      pin.offer.guests === parseInt(filterGuestInput.value, 10);
+    return filterGuestInputElement.value === FILTER_INITIAL ? true :
+      pin.offer.guests === parseInt(filterGuestInputElement.value, 10);
   };
 
   var filterFeature = function (pin) {

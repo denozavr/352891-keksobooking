@@ -23,17 +23,17 @@
   var formElement = document.querySelector('.ad-form');
   var mapFilterElement = document.querySelector('.map__filters');
 
-  var inputTitle = formElement.querySelector('#title');
-  var inputPrice = formElement.querySelector('#price');
-  var inputType = formElement.querySelector('#type');
-  var inputСheckInOut = formElement.querySelectorAll('.ad-form__element--time select');
-  var inputRooms = formElement.querySelector('#room_number');
-  var inputCapacity = formElement.querySelector('#capacity');
-  var inputAddress = formElement.querySelector('#address');
-  var buttonReset = formElement.querySelector('.ad-form__reset');
+  var inputTitleElement = formElement.querySelector('#title');
+  var inputPriceElement = formElement.querySelector('#price');
+  var inputTypeElement = formElement.querySelector('#type');
+  var inputsСheckInOutElement = formElement.querySelectorAll('.ad-form__element--time select');
+  var inputRoomsElement = formElement.querySelector('#room_number');
+  var inputCapacityElement = formElement.querySelector('#capacity');
+  var inputAddressElement = formElement.querySelector('#address');
+  var buttonResetElement = formElement.querySelector('.ad-form__reset');
 
-  var inputTypeInitialValue = inputType.value;
-  var inputRoomsInitialValue = inputRooms.value;
+  var inputTypeInitialValue = inputTypeElement.value;
+  var inputRoomsInitialValue = inputRoomsElement.value;
 
   // disable all fieldsets and selects
   var formElements = document.querySelectorAll('fieldset, select');
@@ -46,18 +46,18 @@
 
 
   var setAddress = function (coordinates) {
-    inputAddress.value = coordinates;
+    inputAddressElement.value = coordinates;
   };
 
   var setMinPrice = function () {
-    var minCost = window.utils.ApartType[inputType.value].MIN_PRICE;
-    inputPrice.min = minCost;
-    inputPrice.placeholder = minCost;
+    var minCost = window.utils.ApartType[inputTypeElement.value].MIN_PRICE;
+    inputPriceElement.min = minCost;
+    inputPriceElement.placeholder = minCost;
   };
 
   // set the same checkin and checkout times
   var changeTimes = function (evt) {
-    inputСheckInOut.forEach(function (item) {
+    inputsСheckInOutElement.forEach(function (item) {
       if (evt.target.value !== item.value) {
         item.value = evt.target.value;
       }
@@ -67,29 +67,29 @@
   var inputTitleInvalidListener = function (evt) {
     if (evt.target.value.length < TitleLimit.MIN ||
       evt.target.value.length > TitleLimit.MAX) {
-      inputTitle.setCustomValidity(InvalidMessage.TITLE);
+      inputTitleElement.setCustomValidity(InvalidMessage.TITLE);
     } else {
-      inputTitle.setCustomValidity('');
+      inputTitleElement.setCustomValidity('');
     }
   };
 
   var inputPriceInvalidListener = function (evt) {
     if (!evt.target.value) {
-      inputPrice.setCustomValidity(InvalidMessage.PRICE);
+      inputPriceElement.setCustomValidity(InvalidMessage.PRICE);
     } else {
-      inputPrice.setCustomValidity('');
+      inputPriceElement.setCustomValidity('');
     }
   };
 
   var updateRoom = function () {
-    var room = inputRooms.value;
+    var room = inputRoomsElement.value;
     var placesForRoom = RoomOption[room];
-    inputCapacity.textContent = '';
+    inputCapacityElement.textContent = '';
     placesForRoom.forEach(function (item, i) {
       var forPlacesOption = document.createElement('option');
       forPlacesOption.textContent = item;
       forPlacesOption.value = (+room > 3) ? 0 : i + 1;
-      inputCapacity.appendChild(forPlacesOption);
+      inputCapacityElement.appendChild(forPlacesOption);
     });
   };
 
@@ -106,17 +106,17 @@
   };
 
   var initForm = function () {
-    inputСheckInOut.forEach(function (select) {
+    inputsСheckInOutElement.forEach(function (select) {
       select.addEventListener('change', changeTimes);
     });
-    inputRooms.addEventListener('change', updateRoom);
-    inputType.addEventListener('change', setMinPrice);
-    inputTitle.addEventListener('invalid', inputTitleInvalidListener);
-    inputTitle.addEventListener('blur', inputTitleInvalidListener);
-    inputPrice.addEventListener('invalid', inputPriceInvalidListener);
-    inputPrice.addEventListener('blur', inputPriceInvalidListener);
+    inputRoomsElement.addEventListener('change', updateRoom);
+    inputTypeElement.addEventListener('change', setMinPrice);
+    inputTitleElement.addEventListener('invalid', inputTitleInvalidListener);
+    inputTitleElement.addEventListener('blur', inputTitleInvalidListener);
+    inputPriceElement.addEventListener('invalid', inputPriceInvalidListener);
+    inputPriceElement.addEventListener('blur', inputPriceInvalidListener);
     formElement.addEventListener('submit', formSubmitHandler);
-    buttonReset.addEventListener('click', onFormReset);
+    buttonResetElement.addEventListener('click', onFormReset);
 
     mapFilterElement.addEventListener('change', onFilterChange);
 
@@ -131,24 +131,24 @@
 
   // set initial values for Type -> MinPrice and Rooms -> Capacity
   var setInitialInputsValue = function () {
-    inputType.value = inputTypeInitialValue;
+    inputTypeElement.value = inputTypeInitialValue;
     setMinPrice();
-    inputRooms.value = inputRoomsInitialValue;
+    inputRoomsElement.value = inputRoomsInitialValue;
     updateRoom();
   };
 
   var removeEventListeners = function () {
-    inputСheckInOut.forEach(function (select) {
+    inputsСheckInOutElement.forEach(function (select) {
       select.removeEventListener('change', changeTimes);
     });
-    inputRooms.removeEventListener('change', updateRoom);
-    inputType.removeEventListener('change', setMinPrice);
-    inputTitle.removeEventListener('invalid', inputTitleInvalidListener);
-    inputTitle.removeEventListener('blur', inputTitleInvalidListener);
-    inputPrice.removeEventListener('invalid', inputPriceInvalidListener);
-    inputPrice.removeEventListener('blur', inputPriceInvalidListener);
+    inputRoomsElement.removeEventListener('change', updateRoom);
+    inputTypeElement.removeEventListener('change', setMinPrice);
+    inputTitleElement.removeEventListener('invalid', inputTitleInvalidListener);
+    inputTitleElement.removeEventListener('blur', inputTitleInvalidListener);
+    inputPriceElement.removeEventListener('invalid', inputPriceInvalidListener);
+    inputPriceElement.removeEventListener('blur', inputPriceInvalidListener);
     formElement.removeEventListener('submit', formSubmitHandler);
-    buttonReset.removeEventListener('click', onFormReset);
+    buttonResetElement.removeEventListener('click', onFormReset);
     mapFilterElement.removeEventListener('change', onFilterChange);
   };
 
@@ -169,7 +169,7 @@
 
     dialog.remove();
     document.removeEventListener('keydown', onKeydown);
-    document.removeEventListener('click', onClick);
+    document.removeEventListener('click', hideMessage);
   };
 
   var onKeydown = function (evt) {
@@ -186,7 +186,7 @@
 
     main.appendChild(template);
     document.addEventListener('keydown', onKeydown);
-    document.addEventListener('click', onClick);
+    document.addEventListener('click', hideMessage);
   };
 
   var showError = function () {

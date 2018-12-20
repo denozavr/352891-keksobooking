@@ -20,7 +20,7 @@
     for (var i = 0; i < array.length; i++) {
       adverts = array;
 
-      if (!window.utils.checkifObjEmpty(adverts[i], 'offer')) {
+      if (!window.utils.checkIsObjectEmpty(adverts[i], 'offer')) {
         var pinElement = mapPinTemplate.cloneNode(true);
         pinElement.style.left = adverts[i].location.x + 'px';
         pinElement.style.top = adverts[i].location.y + 'px';
