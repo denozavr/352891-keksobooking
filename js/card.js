@@ -38,10 +38,11 @@
     cardElement.querySelector('img').src = advert.author.avatar;
     cardElement.querySelector('.popup__title').textContent = offer.title;
     cardElement.querySelector('.popup__text--address').textContent = offer.address;
-    cardElement.querySelector('.popup__text--price').textContent = offer.price + '₽/ночь';
-    cardElement.querySelector('.popup__type').textContent = window.utils.ApartType[offer.type].TITLE; // offer.type;
-    cardElement.querySelector('.popup__text--capacity').textContent = offer.rooms + ' комнаты для ' + offer.guests + ' гостей';
-    cardElement.querySelector('.popup__text--time').textContent = 'заезд после ' + offer.checkin + ', ' + 'выезд до ' + offer.checkout;
+    cardElement.querySelector('.popup__text--price').textContent = offer.price > 0 ? offer.price + '₽/ночь' : '';
+    cardElement.querySelector('.popup__type').textContent = window.utils.ApartType[offer.type].TITLE;
+
+    cardElement.querySelector('.popup__text--capacity').textContent = (offer.rooms > 0 && offer.guests > 0) ? offer.rooms + ' комнаты для ' + offer.guests + ' гостей' : '';
+    cardElement.querySelector('.popup__text--time').textContent = (parseInt(offer.checkin, 10) > 0 && parseInt(offer.checkout, 10) > 0) ? 'заезд после ' + offer.checkin + ', ' + 'выезд до ' + offer.checkout : '';
     cardElement.querySelector('.popup__description').textContent = offer.description;
 
     cardElement.querySelector('.popup__features').innerHTML = '';
