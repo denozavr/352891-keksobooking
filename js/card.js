@@ -5,15 +5,17 @@
   var mapElement = document.querySelector('section.map');
   var mapCardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var cardElement = mapCardTemplate.cloneNode(true);
+  var popupCloseElement = cardElement.querySelector('.popup__close');
+
   var fragment = document.createDocumentFragment();
 
   var createFeatures = function (elements) {
-    for (var i = 0; i < elements.length; i++) {
+    elements.forEach(function (feature) {
       var featureItem = document.createElement('li');
-      featureItem.className = 'popup__feature popup__feature--' + elements[i];
-      featureItem.title = elements[i];
+      featureItem.className = 'popup__feature popup__feature--' + feature;
+      featureItem.title = feature;
       fragment.appendChild(featureItem);
-    }
+    });
     return fragment;
   };
 
@@ -53,13 +55,16 @@
     mapElement.appendChild(cardElement);
   };
 
-  // close Card(advert) popup on cross click and ESC button
-  cardElement.querySelector('.popup__close').addEventListener('click', function () {
-    cardElement.classList.add('hidden');
-  });
+  var onKeyDown = function (evt) {
+    window.utils.checkEscape(evt, hidePopup);
+  };
+
+  var onClick = function () {
+    hidePopup();
+  };
 
 
-  var showCard = function (evt, adverts) {
+  var showPopup = function (evt, adverts) {
     var index = evt.target.dataset.advertId;
     var parentElement = evt.target.parentElement;
     if (evt.target.tagName === 'BUTTON') {
@@ -70,22 +75,23 @@
       createCard(adverts[index]);
       cardElement.classList.remove('hidden');
     }
+    // close Card(advert) popup on cross click and ESC button
+    mapElement.addEventListener('keydown', onKeyDown);
+    popupCloseElement.addEventListener('click', onClick);
   };
 
-  var hideCard = function () {
-    var card = document.querySelector('.map__card.popup');
+  var hidePopup = function () {
+    var card = mapElement.querySelector('.map__card.popup');
 
     if (card) {
+      mapElement.removeEventListener('keydown', onKeyDown);
+      popupCloseElement.removeEventListener('click', onClick);
       card.remove();
     }
   };
 
-  mapElement.addEventListener('keydown', function (evt) {
-    window.utils.checkEscape(evt, hideCard);
-  });
-
   window.card = {
-    showCard: showCard,
-    hideCard: hideCard
+    showPopup: showPopup,
+    hidePopup: hidePopup
   };
 })();

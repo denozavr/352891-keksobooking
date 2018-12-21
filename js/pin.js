@@ -3,7 +3,7 @@
 (function () {
   var MAX_PINS = 5;
 
-  var mapPinsElement = document.querySelector('.map__pins:not(.map__pin--main)'); // not to not show card for mainPin(will show error in console)
+  var mapPinsElement = document.querySelector('.map__pins');
   var mapPinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
   var fragment = document.createDocumentFragment();
@@ -11,6 +11,9 @@
   var allPins = [];
 
   var addPins = function (elements) {
+    if (elements.length > 0) {
+      mapPinsElement.addEventListener('click', onClick); // add only if loadData from backend was successfull
+    }
     // if 1st call without filtering, then populate allPins array and don't touch it for the next filtered calls
     if (allPins.length === 0) {
       allPins = elements;
@@ -48,21 +51,30 @@
 
   var deletePins = function () {
     // hide all pins, except MainPin
-    var items = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var items = mapPinsElement.querySelectorAll('.map__pin:not(.map__pin--main)');
 
     items.forEach(function (item) {
       item.remove();
     });
+    mapPinsElement.removeEventListener('click', onClick);
   };
 
   var getAllPins = function () {
     return allPins;
   };
 
-  // click on pin and show Card(advert) popup
-  mapPinsElement.addEventListener('click', function (evt) {
-    window.card.showCard(evt, adverts);
-  });
+  var checkAdvertId = function (evt) {
+    var advertId = evt.target.dataset.advertId || (evt.target.offsetParent && evt.target.offsetParent.dataset.advertId);
+    return parseInt(advertId, 10);
+  };
+
+  var onClick = function (evt) {
+    // call card.showPopup only for map__pin, but not for mainPin or click on div.map__pins
+    if (checkAdvertId(evt) >= 0) {
+      window.card.showPopup(evt, adverts);
+    }
+  };
+
 
   window.pin = {
     createPins: createPins,

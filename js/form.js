@@ -38,9 +38,9 @@
   // disable all fieldsets and selects
   var formElements = document.querySelectorAll('fieldset, select');
   var disableFormElements = function (disable) {
-    for (var i = 0; i < formElements.length; i++) {
-      formElements[i].disabled = disable;
-    }
+    formElements.forEach(function (formInput) {
+      formInput.disabled = disable;
+    });
   };
   disableFormElements(true);
 
@@ -96,7 +96,7 @@
   var onFilterChange = window.utils.setDebounce(function () {
     var filteredPins = window.filter.getFiltered(window.pin.getAllPins());
 
-    window.card.hideCard();
+    window.card.hidePopup();
     window.pin.deletePins();
     window.pin.createPins(filteredPins);
   });
@@ -177,7 +177,7 @@
     makeFormInactive();
     window.map.resetMainPinPosition();
     window.pin.deletePins();
-    window.card.hideCard();
+    window.card.hidePopup();
   };
 
   var setSuccess = function () {

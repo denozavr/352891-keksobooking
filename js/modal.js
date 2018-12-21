@@ -1,6 +1,10 @@
 'use strict';
 
 (function () {
+
+  var bodyElement = document.querySelector('body');
+  var mainElement = bodyElement.querySelector('main');
+
   var onClick = function () {
     hideMessage();
   };
@@ -10,25 +14,23 @@
   };
 
   var hideMessage = function () {
-    var dialog = document.querySelector('.success, .error');
+    var dialog = mainElement.querySelector('.success, .error');
 
     dialog.remove();
-    document.removeEventListener('keydown', onKeydown);
-    document.removeEventListener('click', onClick);
+    bodyElement.removeEventListener('keydown', onKeydown);
+    bodyElement.removeEventListener('click', onClick);
   };
 
   var showSuccessMessage = function () {
-    var template = document.querySelector('#success').content.cloneNode(true);
-    var mainElement = document.body.querySelector('main');
+    var template = bodyElement.querySelector('#success').content.cloneNode(true);
 
     mainElement.appendChild(template);
-    document.addEventListener('keydown', onKeydown);
-    document.addEventListener('click', onClick);
+    bodyElement.addEventListener('keydown', onKeydown);
+    bodyElement.addEventListener('click', onClick);
   };
 
   var showErrorMessage = function (message) {
-    var template = document.querySelector('#error').content.cloneNode(true);
-    var mainElement = document.body.querySelector('main');
+    var template = bodyElement.querySelector('#error').content.cloneNode(true);
 
     // if could not load pins on intital MainPin drag (message comes from backend.js)
     if (message === 'Connection error') {
@@ -39,8 +41,8 @@
 
     mainElement.appendChild(template);
 
-    document.addEventListener('keydown', onKeydown);
-    document.addEventListener('click', onClick);
+    bodyElement.addEventListener('keydown', onKeydown);
+    bodyElement.addEventListener('click', onClick);
   };
 
   window.modal = {

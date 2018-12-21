@@ -5,6 +5,12 @@
     MIDDLE: 50000
   };
 
+  var PriceOption = {
+    LOW: 'low',
+    MIDDLE: 'middle',
+    HIGH: 'high'
+  };
+
   var FILTER_INITIAL = 'any';
   var filtersElement = document.querySelector('.map__filters');
   var filterTypeInputElement = filtersElement.querySelector('#housing-type');
@@ -13,17 +19,16 @@
   var filterGuestInputElement = filtersElement.querySelector('#housing-guests');
 
   var filterType = function (pin) {
-    return filterTypeInputElement.value === FILTER_INITIAL ? true :
-      pin.offer.type === filterTypeInputElement.value;
+    return pin.offer.type === filterTypeInputElement.value;
   };
 
   var filterPrice = function (pin) {
     switch (filterPriceInputElement.value) {
-      case 'low':
+      case PriceOption.LOW:
         return pin.offer.price < Price.LOW;
-      case 'middle':
+      case PriceOption.MIDDLE:
         return pin.offer.price >= Price.LOW && pin.offer.price <= Price.MIDDLE;
-      case 'high':
+      case PriceOption.HIGH:
         return pin.offer.price > Price.MIDDLE;
       default:
         return true;
