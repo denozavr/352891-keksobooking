@@ -96,7 +96,7 @@
   var onFilterChange = window.utils.setDebounce(function () {
     var filteredPins = window.filter.getFiltered(window.pin.getAllPins());
 
-    window.card.hidePopup();
+    window.card.hide();
     window.pin.deletePins();
     window.pin.createPins(filteredPins);
   });
@@ -177,7 +177,7 @@
     makeFormInactive();
     window.map.resetMainPinPosition();
     window.pin.deletePins();
-    window.card.hidePopup();
+    window.card.hide();
   };
 
   var setSuccess = function () {

@@ -71,7 +71,7 @@
   var onClick = function (evt) {
     // call card.showPopup only for map__pin, but not for mainPin or click on div.map__pins
     if (checkAdvertId(evt) >= 0) {
-      window.card.showPopup(evt, adverts);
+      window.card.show(evt, adverts);
     }
   };
 

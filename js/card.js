@@ -56,15 +56,15 @@
   };
 
   var onKeyDown = function (evt) {
-    window.utils.checkEscape(evt, hidePopup);
+    window.utils.checkEscape(evt, hideCard);
   };
 
   var onClick = function () {
-    hidePopup();
+    hideCard();
   };
 
 
-  var showPopup = function (evt, adverts) {
+  var showCard = function (evt, adverts) {
     var index = evt.target.dataset.advertId;
     var parentElement = evt.target.parentElement;
     if (evt.target.tagName === 'BUTTON') {
@@ -80,7 +80,7 @@
     popupCloseElement.addEventListener('click', onClick);
   };
 
-  var hidePopup = function () {
+  var hideCard = function () {
     var card = mapElement.querySelector('.map__card.popup');
 
     if (card) {
@@ -91,7 +91,7 @@
   };
 
   window.card = {
-    showPopup: showPopup,
-    hidePopup: hidePopup
+    show: showCard,
+    hide: hideCard
   };
 })();
